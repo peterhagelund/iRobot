@@ -1,0 +1,13 @@
+# Python stuff
+__pycache__
+
+# Pytest
+.pytest_cache
+.coverage
+htmlcov
+
+# VS Code
+.vscode
+
+# Git
+py_irobot.egg-info
