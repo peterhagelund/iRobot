@@ -25,8 +25,11 @@ SOFTWARE.
 """
 
 
+from asyncio.log import logger
 from datetime import datetime
 from enum import IntEnum, unique
+from io import StringIO
+from logging import Logger, DEBUG
 from struct import pack
 from threading import Lock
 from time import sleep
@@ -35,6 +38,7 @@ from typing import List
 from serial import Serial
 
 from irobot.packet import Packet
+from irobot.util import hex_dump
 
 START_DURATION = 0.5
 """The delay after a `START` command."""
@@ -202,8 +206,9 @@ class Roomba(object):
         115200: BaudCode.B115200
     }
 
-    def __init__(self, serial: Serial) -> None:
+    def __init__(self, serial: Serial, logger: Logger = None) -> None:
         self.serial = serial
+        self.logger = logger
         self._lock = Lock()
 
     def start(self) -> None:
@@ -603,6 +608,7 @@ class Roomba(object):
         Arguments:
         data: the raw bytes of data to send to the Roomba.
         """
+        self._dump_data("Writing data:", data)
         self._lock.acquire()
         try:
             self.serial.write(data)
@@ -621,7 +627,9 @@ class Roomba(object):
         """
         self._lock.acquire()
         try:
-            return self.serial.read(size=size)
+            data = self.serial.read(size=size)
+            self._dump_data("Read data:", data)
+            return data
         finally:
             self._lock.release()
 
@@ -637,9 +645,28 @@ class Roomba(object):
         """
         self._lock.acquire()
         try:
+            self._dump_data("Writing data:", data)
             self.serial.write(data)
             self.serial.flush()
             sleep(0.1)  # Figure this out empirically
-            return self.serial.read(size=size)
+            data = self.serial.read(size=size)
+            self._dump_data("Read data:", data)
+            return data
         finally:
             self._lock.release()
+
+    def _dump_data(self, message: str, data: bytes) -> None:
+        """Dumps data being sent or received.
+
+        Arguments:
+        message: the message to output before the hex dump
+        data: the data
+        """
+        if self.logger is None or not self.logger.isEnabledFor(DEBUG):
+            return
+        io = StringIO()
+        hex_dump(data, io)
+        self.logger.debug(message)
+        for line in io.getvalue().split("\n"):
+            if len(line) > 0:
+                self.logger.debug(line)
