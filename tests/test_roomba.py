@@ -135,19 +135,19 @@ def test_motors_invalid_vacuum():
 def test_leds():
     roomba = create_mocked_roomba()
     roomba.leds(100, 200, False, True, False, False)
-    roomba.serial.write.assert_called_once_with(bytes([139, 100, 200, 0b00000100]))
+    roomba.serial.write.assert_called_once_with(bytes([139, 0b00000100, 100, 200]))
 
 
 def test_leds_all_on():
     roomba = create_mocked_roomba()
     roomba.leds(255, 255, True, True, True, True)
-    roomba.serial.write.assert_called_once_with(bytes([139, 255, 255, 0b00001111]))
+    roomba.serial.write.assert_called_once_with(bytes([139, 0b00001111, 255, 255]))
 
 
 def test_leds_all_off():
     roomba = create_mocked_roomba()
     roomba.leds(0, 0, False, False, False, False)
-    roomba.serial.write.assert_called_once_with(bytes([139, 0, 0, 0b00000000]))
+    roomba.serial.write.assert_called_once_with(bytes([139, 0b00000000, 0, 0]))
 
 
 def test_leds_invalid_color():

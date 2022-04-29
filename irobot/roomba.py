@@ -29,7 +29,7 @@ from asyncio.log import logger
 from datetime import datetime
 from enum import IntEnum, unique
 from io import StringIO
-from logging import Logger, DEBUG
+from logging import DEBUG, Logger
 from struct import pack
 from threading import Lock
 from time import sleep
@@ -357,7 +357,7 @@ class Roomba(object):
             led_bits |= 0b00000010
         if debris is True:
             led_bits |= 0b00000001
-        data = bytes([int(Command.LEDS), color, intensity, led_bits])
+        data = bytes([int(Command.LEDS), led_bits, color, intensity])
         self.write(data)
 
     def song(self, song: int, notes: List[tuple[int, int]]) -> None:
