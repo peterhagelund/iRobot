@@ -25,7 +25,6 @@ SOFTWARE.
 """
 
 
-from asyncio.log import logger
 from datetime import datetime
 from enum import IntEnum, unique
 from io import StringIO
