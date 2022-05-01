@@ -188,7 +188,7 @@ class Button(IntEnum):
     """The `CLOCK` button."""
 
 
-class Roomba(object):
+class Roomba:
     """Roomba API for communicating with a physical Roomba vacuum cleaner through a serial connection."""
     _baud_codes = {
         300: BaudCode.B300,
