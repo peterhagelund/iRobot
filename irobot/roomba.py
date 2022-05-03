@@ -32,7 +32,6 @@ from logging import DEBUG, Logger
 from struct import pack
 from threading import Lock
 from time import sleep
-from typing import List
 
 from serial import Serial
 
@@ -359,7 +358,7 @@ class Roomba:
         data = bytes([int(Command.LEDS), led_bits, color, intensity])
         self.write(data)
 
-    def song(self, song: int, notes: List[tuple[int, int]]) -> None:
+    def song(self, song: int, notes: list[tuple[int, int]]) -> None:
         """Defines a song the Roomba can play.
 
         Arguments:
@@ -469,7 +468,7 @@ class Roomba:
         data = pack(">Bhh", int(Command.DRIVE_PWM), right_pwm, left_pwm)
         self.write(data)
 
-    def stream(self, ids: List[int]) -> int:
+    def stream(self, ids: list[int]) -> int:
         """Instructs the Roomba to stream sensor packets every 15 ms.
 
         Please note:
@@ -501,7 +500,7 @@ class Roomba:
         self.write(data)
         return 1 + 1 + len(ids) + size + 1  # Header, size, packet ids, size of packet data, and checksum
 
-    def query_list(self, ids: List[int]) -> List[Packet]:
+    def query_list(self, ids: list[int]) -> list[Packet]:
         """Instructs the Roomba to send a list of sensor packets.
 
         Please note: There is a theoretical max of 255 packets as the number of packets is sent as an unsigned byte.
@@ -554,7 +553,7 @@ class Roomba:
         data = bytes([int(Command.DIGIT_LEDS_ASCII)]) + bytes(digits, "ASCII")
         self.write(data)
 
-    def buttons(self, buttons: List[Button]) -> None:
+    def buttons(self, buttons: list[Button]) -> None:
         """Instructs the Roomba to press one or more of its buttons.
 
         Arguments:

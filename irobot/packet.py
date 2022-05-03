@@ -29,7 +29,7 @@ from abc import ABC, abstractclassmethod
 from dataclasses import dataclass
 from enum import IntEnum, unique
 from struct import unpack_from
-from typing import ClassVar, Dict
+from typing import ClassVar
 
 
 @unique
@@ -72,7 +72,7 @@ class Packet(ABC):
     """The packet `id`."""
     size: int = None
     """The packet `size`."""
-    registry: Dict[str, type]
+    registry: dict[str, type]
     """The packet type registry."""
 
     @staticmethod
