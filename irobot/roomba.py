@@ -476,7 +476,7 @@ class Roomba:
         2. The maximum of amount of data is `(baudrate / 10) * (15 / 1000)`. For a baudrate of 57,600 that's 86 bytes and for 115,200 it's 172.
 
         Arguments:
-        ids: the `List` of packet ids
+        ids: the `list` of packet ids
 
         Return: the raw size of the data that will be streamed from the Roomba
         """
@@ -506,9 +506,9 @@ class Roomba:
         Please note: There is a theoretical max of 255 packets as the number of packets is sent as an unsigned byte.
 
         Arguments:
-        ids: the `List` of packet ids to query
+        ids: the `list` of packet ids to query
 
-        Return: the requested `List` of packets.
+        Return: the requested `list` of packets.
         """
         if len(ids) > 255:
             raise ValueError("Cannot request more than 255 packets")
@@ -646,7 +646,7 @@ class Roomba:
             self._dump_data("Writing data:", data)
             self.serial.write(data)
             self.serial.flush()
-            sleep(0.1)  # Figure this out empirically
+            sleep(COMMAND_PROCESS_DURATION)
             data = self.serial.read(size=size)
             self._dump_data("Read data:", data)
             return data
