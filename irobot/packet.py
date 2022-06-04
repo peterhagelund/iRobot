@@ -48,7 +48,7 @@ class ChargingState(IntEnum):
     CHARGING_FAULT_CONDITION = 5
     """There is a fault condition."""
     UNKNOWN = 6
-    """The charging state is unknow. If the data received from the Roomba is correct, this should never happen."""
+    """The charging state is unknown. If the data received from the Roomba is correct, this should never happen."""
 
 
 @unique

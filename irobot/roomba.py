@@ -211,7 +211,7 @@ class Roomba:
 
     def start(self) -> None:
         """Starts the Open Interface (OI)."""
-        data = bytes([int(Command.START)])
+        data = bytes([Command.START])
         self.write(data)
         sleep(START_DURATION)  # The beep from the Roomba actually takes time...
 
@@ -231,7 +231,7 @@ class Roomba:
         Arguments:
         baud_code: one of the twelve baud codes
         """
-        data = bytes([int(Command.BAUD), int(baud_code)])
+        data = bytes([Command.BAUD, baud_code])
         self.write(data)
         sleep(MODE_CHANGE_DURATION)
 
@@ -240,7 +240,7 @@ class Roomba:
 
         Please note: the result of executing this command is to put the Roomba is Safe mode, so using `safe()` is preferable.
         """
-        data = bytes([int(Command.CONTROL)])
+        data = bytes([Command.CONTROL])
         self.write(data)
         sleep(MODE_CHANGE_DURATION)
 
@@ -249,7 +249,7 @@ class Roomba:
 
         The OI can be in Passive, Safe, or Full mode to accept this command. If a safety condition occurs Roomba reverts automatically to Passive mode.
         """
-        data = bytes([int(Command.SAFE)])
+        data = bytes([Command.SAFE])
         self.write(data)
         sleep(MODE_CHANGE_DURATION)
 
@@ -259,29 +259,29 @@ class Roomba:
         The OI can be in Passive, Safe, or Full mode to accept this command. In Full mode, Roomba executes any command that you send it, even if the internal
         charger is plugged in, or command triggers a cliff or wheel drop condition.
         """
-        data = bytes([int(Command.FULL)])
+        data = bytes([Command.FULL])
         self.write(data)
         sleep(MODE_CHANGE_DURATION)
 
     def power(self) -> None:
         """Powers down the Roomba. The OI can be in Passive, Safe, or Full mode to accept this command."""
-        data = bytes([int(Command.POWER)])
+        data = bytes([Command.POWER])
         self.write(data)
         sleep(MODE_CHANGE_DURATION)
 
     def spot(self) -> None:
         """Starts the Spot cleaning mode."""
-        data = bytes([int(Command.SPOT)])
+        data = bytes([Command.SPOT])
         self.write(data)
 
     def clean(self) -> None:
         """Starts the default cleaning mode."""
-        data = bytes([int(Command.CLEAN)])
+        data = bytes([Command.CLEAN])
         self.write(data)
 
     def max(self) -> None:
         """Starts the Max cleaning mode."""
-        data = bytes([int(Command.MAX)])
+        data = bytes([Command.MAX])
         self.write(data)
 
     def drive(self, velocity: int, radius: int) -> None:
@@ -298,7 +298,7 @@ class Roomba:
             raise ValueError(f"Velocity {velocity} is unsupported by Roomba")
         if radius < -2000 or radius > 2000:
             raise ValueError(f"Radius {radius} is unsupported by Roomba")
-        data = pack(">Bhh", int(Command.DRIVE), velocity, radius)
+        data = pack(">Bhh", Command.DRIVE, velocity, radius)
         self.write(data)
 
     def motors(self, main_brush: Motor, side_brush: Motor, vacuum: Motor) -> None:
@@ -328,7 +328,7 @@ class Roomba:
             motor_bits |= 0b00000010
         else:
             raise ValueError("Vacuum can only run in the default direction")
-        data = bytes([int(Command.MOTORS), motor_bits])
+        data = bytes([Command.MOTORS, motor_bits])
         self.write(data)
 
     def leds(self, color: int, intensity: int, check_robot: bool, dock: bool, spot: bool, debris: bool) -> None:
@@ -355,7 +355,7 @@ class Roomba:
             led_bits |= 0b00000010
         if debris is True:
             led_bits |= 0b00000001
-        data = bytes([int(Command.LEDS), led_bits, color, intensity])
+        data = bytes([Command.LEDS, led_bits, color, intensity])
         self.write(data)
 
     def song(self, song: int, notes: list[tuple[int, int]]) -> None:
@@ -375,7 +375,7 @@ class Roomba:
             if notes[i][1] < 0 or notes[i][1] > 255:
                 raise ValueError(f"Note duration {notes[i][1]} at position {i} is not supported by Roomba")
         a = [0] * (1 + 2 + 2 * len(notes))  # Command, song, number of notes, and two bytes per note
-        a[0] = int(Command.SONG)
+        a[0] = Command.SONG
         a[1] = song
         a[2] = len(notes)
         for i in range(len(notes)):
@@ -392,7 +392,7 @@ class Roomba:
         """
         if song < 0 or song > 4:
             raise ValueError(f"Song {song} is not supported by Roomba")
-        data = bytes([int(Command.PLAY), song])
+        data = bytes([Command.PLAY, song])
         self.write(data)
 
     def sensors(self, id: int) -> Packet:
@@ -406,13 +406,13 @@ class Roomba:
         if id not in Packet.registry:
             raise ValueError(f"Packet {id} is unknown")
         cls = Packet.registry[id]
-        data = bytes([int(Command.SENSORS), id])
+        data = bytes([Command.SENSORS, id])
         data = self.write_and_read(data, size=cls.size)
         return cls.from_bytes(data)
 
     def seek_dock(self) -> None:
         """Instructs the Roomba to seek its dock."""
-        data = bytes([int(Command.SEEK_DOCK)])
+        data = bytes([Command.SEEK_DOCK])
         self.write(data)
 
     def motors_pwm(self, main_brush_pwm: int, side_brush_pwm: int, vacuum_pwm: int) -> None:
@@ -429,7 +429,7 @@ class Roomba:
             raise ValueError(f"Side brush PWM {side_brush_pwm} is invalid")
         if vacuum_pwm < 0 or vacuum_pwm > 127:
             raise ValueError(f"Vacuum PWM {side_brush_pwm} is invalid")
-        data = pack(">BbbB", int(Command.MOTORS_PWM), main_brush_pwm, side_brush_pwm, vacuum_pwm)
+        data = pack(">BbbB", Command.MOTORS_PWM, main_brush_pwm, side_brush_pwm, vacuum_pwm)
         self.write(data)
 
     def drive_direct(self, left_velocity: int, right_velocity: int) -> None:
@@ -447,7 +447,7 @@ class Roomba:
             raise ValueError(f"Velocity {left_velocity} is unsupported by Roomba")
         if right_velocity < -500 or right_velocity > 500:
             raise ValueError(f"Velocity {right_velocity} is unsupported by Roomba")
-        data = pack(">Bhh", int(Command.DRIVE_DIRECT), right_velocity, left_velocity)
+        data = pack(">Bhh", Command.DRIVE_DIRECT, right_velocity, left_velocity)
         self.write(data)
 
     def drive_pwm(self, left_pwm: int, right_pwm: int) -> None:
@@ -465,7 +465,7 @@ class Roomba:
             raise ValueError(f"PWM {left_pwm} is unsupported by Roomba")
         if right_pwm < -255 or right_pwm > 255:
             raise ValueError(f"PWM {right_pwm} is unsupported by Roomba")
-        data = pack(">Bhh", int(Command.DRIVE_PWM), right_pwm, left_pwm)
+        data = pack(">Bhh", Command.DRIVE_PWM, right_pwm, left_pwm)
         self.write(data)
 
     def stream(self, ids: list[int]) -> int:
@@ -492,7 +492,7 @@ class Roomba:
         if size > max_size:
             raise ValueError(f"Too much data requested({size} - at {self.serial.baudrate} baud max size is {max_size}")
         a = [0] * (1 + 1 + len(ids))  # Command, number of packets, and 1 byte per packet id
-        a[0] = int(Command.STREAM)
+        a[0] = Command.STREAM
         a[1] = len(ids)
         for i in range(len(ids)):
             a[2 + i] = ids[i]
@@ -519,7 +519,7 @@ class Roomba:
             cls: Packet = Packet.registry[id]
             size += cls.size
         a = [0] * (1 + 1 + len(ids))  # Command, number of packets, and 1 byte per packet id
-        a[0] = int(Command.QUERY_LIST)
+        a[0] = Command.QUERY_LIST
         a[1] = len(ids)
         for i in range(len(ids)):
             a[2 + i] = ids[i]
@@ -540,17 +540,22 @@ class Roomba:
         Arguments:
         start: `True` to start streaming packets; `False` otherwise
         """
-        data = bytes([int(Command.PAUSE_RESUME_STREAM), int(start)])
+        data = bytes([Command.PAUSE_RESUME_STREAM, int(start)])
         self.write(data)
 
     def digit_leds_ascii(self, digits: str) -> None:
+        """Instructs the Roomba to turn on the LEDs to display ASCII characters.
+
+        Arguments:
+        digits: The four (4) digits.
+        """
         if len(digits) != 4:
             raise ValueError(f"Digits '{digits}' not valid - must be 4 characters")
         for c in digits:
             value = ord(c)
             if value < 32 or value > 126:
                 raise ValueError(f"Digit {value} not valid - must be 32 to 126")
-        data = bytes([int(Command.DIGIT_LEDS_ASCII)]) + bytes(digits, "ASCII")
+        data = bytes([Command.DIGIT_LEDS_ASCII]) + bytes(digits, "ASCII")
         self.write(data)
 
     def buttons(self, buttons: list[Button]) -> None:
@@ -561,8 +566,8 @@ class Roomba:
         """
         button_bits = 0b00000000
         for button in buttons:
-            button_bits |= 1 << int(button)
-        data = bytes([int(Command.BUTTONS), button_bits])
+            button_bits |= 1 << button
+        data = bytes([Command.BUTTONS, button_bits])
         self.write(data)
 
     def button(self, button: Button) -> None:
@@ -597,7 +602,7 @@ class Roomba:
             raise ValueError(f"Hour {hour} is invalid")
         if minute < 0 or minute > 59:
             raise ValueError(f"Minute {minute} is invalid")
-        data = bytes([int(Command.SET_DAY_TIME), int(week_day), hour, minute])
+        data = bytes([Command.SET_DAY_TIME, int(week_day), hour, minute])
         self.write(data)
 
     def write(self, data: bytes):
