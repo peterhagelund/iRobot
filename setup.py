@@ -6,7 +6,7 @@ with open("requirements.txt") as f:
     dependencies = f.read().split("\n")
 
 with open("version.txt") as f:
-    version = f.readline()
+    version = f.readline().strip()
 
 setup(
     name="py-irobot",
