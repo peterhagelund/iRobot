@@ -9,5 +9,7 @@ htmlcov
 # VS Code
 .vscode
 
-# Git
+
+# Setup
 py_irobot.egg-info
+dist
