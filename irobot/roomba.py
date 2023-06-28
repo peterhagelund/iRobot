@@ -1,7 +1,7 @@
 """
 iRobot Roomba.
 
-Copyright (c) 2022 Peter Hagelund
+Copyright (c) 2022, 2023 Peter Hagelund
 
 License (MIT):
 
@@ -32,6 +32,7 @@ from logging import DEBUG, Logger
 from struct import pack
 from threading import Lock
 from time import sleep
+from typing import List, Self, Tuple
 
 from serial import Serial
 
@@ -49,6 +50,7 @@ COMMAND_PROCESS_DURATION = 25 / 1000
 @unique
 class Command(IntEnum):
     """Supported Roomba commands."""
+
     START = 128
     """The `START` command. Must be executed before any other commands are sent."""
     BAUD = 129
@@ -110,6 +112,7 @@ class Command(IntEnum):
 @unique
 class BaudCode(IntEnum):
     """Supported Roomba baud rates."""
+
     B300 = 0
     """300 baud."""
     B600 = 1
@@ -139,6 +142,7 @@ class BaudCode(IntEnum):
 @unique
 class WeekDay(IntEnum):
     """Roomba week days."""
+
     SUNDAY = 0
     """Sunday."""
     MONDAY = 1
@@ -158,6 +162,7 @@ class WeekDay(IntEnum):
 @unique
 class Motor(IntEnum):
     """Roomba motor states."""
+
     OFF = 0
     """Turn motor off."""
     DEFAULT = 1
@@ -169,6 +174,7 @@ class Motor(IntEnum):
 @unique
 class Button(IntEnum):
     """Roomba buttons."""
+
     CLEAN = 0
     """The `CLEAN` button."""
     SPOT = 1
@@ -189,6 +195,7 @@ class Button(IntEnum):
 
 class Roomba:
     """Roomba API for communicating with a physical Roomba vacuum cleaner through a serial connection."""
+
     _baud_codes = {
         300: BaudCode.B300,
         600: BaudCode.B600,
@@ -201,51 +208,54 @@ class Roomba:
         28800: BaudCode.B28800,
         38400: BaudCode.B38400,
         57600: BaudCode.B57600,
-        115200: BaudCode.B115200
+        115200: BaudCode.B115200,
     }
 
-    def __init__(self, serial: Serial, logger: Logger = None) -> None:
+    def __init__(self, serial: Serial, logger: Logger = None) -> Self:
         self.serial = serial
         self.logger = logger
         self._lock = Lock()
 
     def start(self) -> None:
-        """Starts the Open Interface (OI)."""
+        """Start the Open Interface (OI)."""
         data = bytes([Command.START])
         self.write(data)
         sleep(START_DURATION)  # The beep from the Roomba actually takes time...
 
     def set_baud_rate(self, baud_rate: int) -> None:
-        """Sets the baud rate.
+        """
+        Set the baud rate.
 
-        Arguments:
-        baud_rate: one of the twelve supported baud rates
+        :param baud_rate: one of the twelve supported baud rates.
+        :raises ValueError: if the specified `baud_rate` is not supported.
         """
         if baud_rate not in Roomba._baud_codes:
             raise ValueError(f"Baud rate {baud_rate} is usnupported by Roomba")
         self.set_baud(Roomba._baud_codes[baud_rate])
 
     def set_baud(self, baud_code: BaudCode) -> None:
-        """Sets the baud rate.
+        """
+        Set the baud rate.
 
-        Arguments:
-        baud_code: one of the twelve baud codes
+        :param baud_code: one of the twelve baud codes.
         """
         data = bytes([Command.BAUD, baud_code])
         self.write(data)
         sleep(MODE_CHANGE_DURATION)
 
     def control(self) -> None:
-        """Enables control of the Roomba.
+        """
+        Enable control of the Roomba.
 
-        Please note: the result of executing this command is to put the Roomba is Safe mode, so using `safe()` is preferable.
+        Please note: the result of executing this command is to put the Roomba is Safe mode, so using `Roomba.safe()` is preferable.
         """
         data = bytes([Command.CONTROL])
         self.write(data)
         sleep(MODE_CHANGE_DURATION)
 
     def safe(self) -> None:
-        """Puts the OI into Safe mode, enabling control of the Roomba.
+        """
+        Put the OI into Safe mode, enabling control of the Roomba.
 
         The OI can be in Passive, Safe, or Full mode to accept this command. If a safety condition occurs Roomba reverts automatically to Passive mode.
         """
@@ -254,7 +264,8 @@ class Roomba:
         sleep(MODE_CHANGE_DURATION)
 
     def full(self) -> None:
-        """Puts the OI into Full mode, enabling full control of the Roomba and turning off the cliff, wheel-drop and internal charger safety features.
+        """
+        Put the OI into Full mode, enabling full control of the Roomba and turning off the cliff, wheel-drop and internal charger safety features.
 
         The OI can be in Passive, Safe, or Full mode to accept this command. In Full mode, Roomba executes any command that you send it, even if the internal
         charger is plugged in, or command triggers a cliff or wheel drop condition.
@@ -264,35 +275,36 @@ class Roomba:
         sleep(MODE_CHANGE_DURATION)
 
     def power(self) -> None:
-        """Powers down the Roomba. The OI can be in Passive, Safe, or Full mode to accept this command."""
+        """Power down the Roomba. The OI can be in Passive, Safe, or Full mode to accept this command."""
         data = bytes([Command.POWER])
         self.write(data)
         sleep(MODE_CHANGE_DURATION)
 
     def spot(self) -> None:
-        """Starts the Spot cleaning mode."""
+        """Start the Spot cleaning mode."""
         data = bytes([Command.SPOT])
         self.write(data)
 
     def clean(self) -> None:
-        """Starts the default cleaning mode."""
+        """Start the default cleaning mode."""
         data = bytes([Command.CLEAN])
         self.write(data)
 
     def max(self) -> None:
-        """Starts the Max cleaning mode."""
+        """Start the Max cleaning mode."""
         data = bytes([Command.MAX])
         self.write(data)
 
     def drive(self, velocity: int, radius: int) -> None:
-        """Instructs the Roomba to drive at the specified velocity (mm/s), turning at the specified radius (mm).
+        """
+        Instruct the Roomba to drive at the specified velocity (mm/s), turning at the specified radius (mm).
 
-        Arguments:
-        velocity: the average velocity (-500 to 500 mm/s)
-        radius: the radius of the turn (-2000 to 2000 mm)
+        :param velocity: the average velocity (-500 to 500 mm/s).
+        :param radius: the radius of the turn (-2000 to 2000 mm).
             32767 or 32768 to drive straight
             -1 to turn clockwise in place
             1 to turn counter-clockwise in place
+        :raises ValueError: if the `velocity` or the `radius` is invalid.
         """
         if velocity < -500 or velocity > 500:
             raise ValueError(f"Velocity {velocity} is unsupported by Roomba")
@@ -302,12 +314,13 @@ class Roomba:
         self.write(data)
 
     def motors(self, main_brush: Motor, side_brush: Motor, vacuum: Motor) -> None:
-        """Instructs the Roomba to turn its motors on and off.
+        """
+        Instruct the Roomba to turn its motors on and off.
 
-        Arguments:
-        main_brush: the main brush motor setting (Motor.OFF, Motor.DEFAULT, or Motor.OPPOSITE)
-        side_brush: the side brush motor setting (Motor.OFF, Motor.DEFAULT, or Motor.OPPOSITE)
-        vacuum: the vacuum motor setting (Motor.OFF or Motor.DEFAULT)
+        :param main_brush: the main brush motor setting (`Motor.OFF`, `Motor.DEFAULT`, or `Motor.OPPOSITE`).
+        :param side_brush: the side brush motor setting (`Motor.OFF`, `Motor.DEFAULT`, or `Motor.OPPOSITE`).
+        :param vacuum: the vacuum motor setting (`Motor.OFF` or `Motor.DEFAULT`).
+        :raises ValueError` if `vacuum` is set to `Motor.OPPOSITE`.
         """
         motor_bits = 0b00000000
         if main_brush == Motor.OFF:
@@ -332,15 +345,16 @@ class Roomba:
         self.write(data)
 
     def leds(self, color: int, intensity: int, check_robot: bool, dock: bool, spot: bool, debris: bool) -> None:
-        """Instructs the Roomba to turn its LEDs on and off.
+        """
+        Instruct the Roomba to turn its LEDs on and off.
 
-        Arguments:
-        color: the color of the Clean/Power button (0 to 255)
-        intensity: the intensity of the Clean/Power button (0 to 255)
-        check_robot: True to turn the check robot LED on; False to turn it off
-        dock: True to turn the dock LED on; False to turn it off
-        spot: True to turn the spot LED on; False to turn it off
-        debris: True to turn the debris LED on; False to turn it off
+        :param color: the color of the Clean/Power button (0 to 255).
+        :param intensity: the intensity of the Clean/Power button (0 to 255).
+        :param check_robot: `True` to turn the check robot LED on; `False` to turn it off.
+        :param dock: `True` to turn the dock LED on; `False` to turn it off.
+        :param spot: `True` to turn the spot LED on; `False` to turn it off.
+        :param debris: `True` to turn the debris LED on; `False` to turn it off.
+        :raises ValueError: if `color` or `intensity` is invalid.
         """
         if color < 0 or color > 255:
             raise ValueError(f"Color {color} is invalid")
@@ -358,12 +372,13 @@ class Roomba:
         data = bytes([Command.LEDS, led_bits, color, intensity])
         self.write(data)
 
-    def song(self, song: int, notes: list[tuple[int, int]]) -> None:
-        """Defines a song the Roomba can play.
+    def song(self, song: int, notes: List[Tuple[int, int]]) -> None:
+        """
+        Define a song the Roomba can play.
 
-        Arguments:
-        song: the song (0 to 4)
-        notes: list of tuples specifying note number (31 to 127) and duration (0 to 255) in 1/64th of a second
+        :param song: the song (0 to 4).
+        :param notes: `List` of tuples specifying note number (31 to 127) and duration (0 to 255) in 1/64th of a second.
+        :raises ValueError: if `song` or `notes` is invalid.
         """
         if song < 0 or song > 4:
             raise ValueError(f"Song {song} is not supported by Roomba")
@@ -385,10 +400,11 @@ class Roomba:
         self.write(data)
 
     def play(self, song: int) -> None:
-        """Instructs the Roomba to play the specified song.
+        """
+        Instruct the Roomba to play the specified song.
 
-        Arguments:
-        song: the song (0 to 4)
+        :param song: the song (0 to 4).
+        :raises ValueError: if `song` is invalid.
         """
         if song < 0 or song > 4:
             raise ValueError(f"Song {song} is not supported by Roomba")
@@ -396,12 +412,13 @@ class Roomba:
         self.write(data)
 
     def sensors(self, id: int) -> Packet:
-        """Requests the sensors with the specified id to be queried.
+        """
+        Request the sensors with the specified id to be queried.
 
-        Arguments:
-        id: the id of the sensors to be queried
-
-        Return: the requested sensor packet
+        :param id: the id of the sensors to be queried.
+        :returns: the requested sensor packet.
+        :rtype: Packet.
+        :raises ValueError: if `id` does not not a known `Packet` type.
         """
         if id not in Packet.registry:
             raise ValueError(f"Packet {id} is unknown")
@@ -411,17 +428,18 @@ class Roomba:
         return cls.from_bytes(data)
 
     def seek_dock(self) -> None:
-        """Instructs the Roomba to seek its dock."""
+        """Instruct the Roomba to seek its dock."""
         data = bytes([Command.SEEK_DOCK])
         self.write(data)
 
     def motors_pwm(self, main_brush_pwm: int, side_brush_pwm: int, vacuum_pwm: int) -> None:
-        """Instructs the Roomba to turn its motors on and off, using the specified, raw Pulse Width Modulation (PWM) values.
+        """
+        Instruct the Roomba to turn its motors on and off, using the specified, raw Pulse Width Modulation (PWM) values.
 
-        Arguments:
-        main_brush_pwm: the main brush PWM (-127 to 127)
-        side_brush_pwm: the side brush PWM (-127 to 127)
-        vacuum_pwm: the vacuum PWM (0 to 127)
+        :param main_brush_pwm: the main brush PWM (-127 to 127).
+        :param side_brush_pwm: the side brush PWM (-127 to 127).
+        :param vacuum_pwm: the vacuum PWM (0 to 127).
+        :raises ValueError: if `main_brush_pwm`, `side_brush_pwm` or `vacuum_pwm` is invalid.
         """
         if main_brush_pwm < -127 or main_brush_pwm > 127:
             raise ValueError(f"Main brush PWM {main_brush_pwm} is invalid")
@@ -433,11 +451,12 @@ class Roomba:
         self.write(data)
 
     def drive_direct(self, left_velocity: int, right_velocity: int) -> None:
-        """Instructs the Roomba to drive at the specified left and right velocities.
+        """
+        Instruct the Roomba to drive at the specified left and right velocities.
 
-        Arguments:
-        left_velocity: the left velocity (-500 to 500 mm/s)
-        right_velocity: the right velocity (-500 to 500 mm/s)
+        :param left_velocity: the left velocity (-500 to 500 mm/s).
+        :param right_velocity: the right velocity (-500 to 500 mm/s).
+        :raises ValueError: if `left_velocity` or `right_velocity` is invalid.
 
         Note: for readability, the method has the left velocity as the first, leftmost argument and the right velocity
         as the second, rightmost argument. When sending the command to the Roomba, the right velocity is the first short
@@ -451,11 +470,12 @@ class Roomba:
         self.write(data)
 
     def drive_pwm(self, left_pwm: int, right_pwm: int) -> None:
-        """Instructs the Roomba to drive using the specified, raw Pulse Width Modulation (PWM) values.
+        """
+        Instruct the Roomba to drive using the specified, raw Pulse Width Modulation (PWM) values.
 
-        Arguments:
-        left_pwm: the left PWM (-255 to 255)
-        right_pwm: the right PWM (-255 to 255)
+        :param left_pwm: the left PWM (-255 to 255)
+        :param right_pwm: the right PWM (-255 to 255)
+        :raises ValueError: if `left_pwm` or `right_pwm` is invalid.
 
         Note: for readability, the method has the left PWM as the first, leftmost argument and the right PWM
         as the second, rightmost argument. When sending the command to the Roomba, the right PWM is the first short
@@ -468,17 +488,18 @@ class Roomba:
         data = pack(">Bhh", Command.DRIVE_PWM, right_pwm, left_pwm)
         self.write(data)
 
-    def stream(self, ids: list[int]) -> int:
-        """Instructs the Roomba to stream sensor packets every 15 ms.
+    def stream(self, ids: List[int]) -> int:
+        """
+        Instruct the Roomba to stream sensor packets every 15 ms.
 
         Please note:
         1. There is a theoretical max of 255 packets as the number of packets is sent as an unsigned byte.
         2. The maximum of amount of data is `(baudrate / 10) * (15 / 1000)`. For a baudrate of 57,600 that's 86 bytes and for 115,200 it's 172.
 
-        Arguments:
-        ids: the `list` of packet ids
-
-        Return: the raw size of the data that will be streamed from the Roomba
+        :param ids: the `List` of packet ids.
+        :returns: the raw size of the data that will be streamed from the Roomba.
+        :rtype: int.
+        :raises ValueError: if `ids` is invalid or the total length exceeds what is possible.
         """
         if len(ids) > 255:
             raise ValueError("Cannot request more than 255 packets")
@@ -500,15 +521,16 @@ class Roomba:
         self.write(data)
         return 1 + 1 + len(ids) + size + 1  # Header, size, packet ids, size of packet data, and checksum
 
-    def query_list(self, ids: list[int]) -> list[Packet]:
-        """Instructs the Roomba to send a list of sensor packets.
+    def query_list(self, ids: List[int]) -> List[Packet]:
+        """
+        Instruct the Roomba to send a list of sensor packets.
 
         Please note: There is a theoretical max of 255 packets as the number of packets is sent as an unsigned byte.
 
-        Arguments:
-        ids: the `list` of packet ids to query
-
-        Return: the requested `list` of packets.
+        :param ids: the `List` of packet ids to query.
+        :returns: the requested `List` of packets.
+        :rtype: List[Packet].
+        :raises ValueError: if `ids` is invalid.
         """
         if len(ids) > 255:
             raise ValueError("Cannot request more than 255 packets")
@@ -535,19 +557,19 @@ class Roomba:
         return packets
 
     def pause_resume_stream(self, start: bool) -> None:
-        """Instructs the Roomba to pause or resume the stream of packets requested with `stream()`.
+        """
+        Instruct the Roomba to pause or resume the stream of packets requested with `Roomba.stream()`.
 
-        Arguments:
-        start: `True` to start streaming packets; `False` otherwise
+        :param start: `True` to start streaming packets; `False` otherwise.
         """
         data = bytes([Command.PAUSE_RESUME_STREAM, int(start)])
         self.write(data)
 
     def digit_leds_ascii(self, digits: str) -> None:
-        """Instructs the Roomba to turn on the LEDs to display ASCII characters.
+        """
+        Instruct the Roomba to turn on the LEDs to display ASCII characters.
 
-        Arguments:
-        digits: The four (4) digits.
+        :param digits: The four (4) digits.
         """
         if len(digits) != 4:
             raise ValueError(f"Digits '{digits}' not valid - must be 4 characters")
@@ -558,11 +580,11 @@ class Roomba:
         data = bytes([Command.DIGIT_LEDS_ASCII]) + bytes(digits, "ASCII")
         self.write(data)
 
-    def buttons(self, buttons: list[Button]) -> None:
-        """Instructs the Roomba to press one or more of its buttons.
+    def buttons(self, buttons: List[Button]) -> None:
+        """
+        Instruct the Roomba to "press" one or more of its buttons.
 
-        Arguments:
-        buttons: list of buttons to press
+        :param buttons: `List` of buttons to press.
         """
         button_bits = 0b00000000
         for button in buttons:
@@ -571,18 +593,18 @@ class Roomba:
         self.write(data)
 
     def button(self, button: Button) -> None:
-        """Instructs the Roomba to press the specified button.
+        """
+        Instruct the Roomba to "press" the specified button.
 
-        Arguments:
-        button: the button to press
+        :param button: the button to press
         """
         self.buttons([button])
 
     def set_date_time(self, date_time: datetime) -> None:
-        """Sets the Roomba's day/time.
+        """
+        Set the Roomba's day/time.
 
-        Arguments:
-        date_time: the date/time to set the day/time from
+        :param date_time: the date/time to set the day/time from
         """
         iso_week_day = date_time.isoweekday()
         if iso_week_day == 7:
@@ -591,12 +613,13 @@ class Roomba:
         self.set_day_time(week_day, date_time.hour, date_time.minute)
 
     def set_day_time(self, week_day: WeekDay, hour: int, minute: int) -> None:
-        """Sets the Roomba's day/time.
+        """
+        Set the Roomba's day/time.
 
-        Arguments:
-        week_day: the week day
-        hour: the hour (0 to 23)
-        minute: the minute (0 to 59)
+        :param week_day: the week day.
+        :param hour: the hour (0 to 23).
+        :param minute: the minute (0 to 59).
+        :raises ValueError: if `hour` or `minute` is invalid.
         """
         if hour < 0 or hour > 23:
             raise ValueError(f"Hour {hour} is invalid")
@@ -606,10 +629,10 @@ class Roomba:
         self.write(data)
 
     def write(self, data: bytes):
-        """Writes the specified data to the Roomba via the serial port.
+        """
+        Write the specified data to the Roomba via the serial port.
 
-        Arguments:
-        data: the raw bytes of data to send to the Roomba.
+        :param data: the raw bytes of data to send to the Roomba.
         """
         self._dump_data("Writing data:", data)
         self._lock.acquire()
@@ -621,12 +644,11 @@ class Roomba:
         sleep(COMMAND_PROCESS_DURATION)
 
     def read(self, size: int = 1) -> bytes:
-        """Reads data of the specified size from the Roomba via the serial port.
+        """
+        Read data of the specified size from the Roomba via the serial port.
 
-        Arguments:
-        size: the size of the data to read (in number of bytes)
-
-        Return: the requested data
+        :param size: the size of the data to read (in number of bytes)
+        :returns: the requested data.
         """
         self._lock.acquire()
         try:
@@ -637,14 +659,14 @@ class Roomba:
             self._lock.release()
 
     def write_and_read(self, data: bytes, size: int = 1) -> bytes:
-        """Writes the specified data to the Roomba and reads data of the specified size from the Roomba via the serial port.
+        """
+        Write the specified data to the Roomba and read data of the specified size from the Roomba via the serial port.
 
 
-        Arguments:
-        data: the raw bytes of data to send to the Roomba.
-        size: the size of the data to read (in number of bytes)
-
-        Return: the requested data
+        :param data: the raw bytes of data to send to the Roomba.
+        :param size: the size of the data to read (in number of bytes).
+        :returns: the requested data.
+        :rtype: bytes.
         """
         self._lock.acquire()
         try:
@@ -659,11 +681,11 @@ class Roomba:
             self._lock.release()
 
     def _dump_data(self, message: str, data: bytes) -> None:
-        """Dumps data being sent or received.
+        """
+        Dump data being sent or received.
 
-        Arguments:
-        message: the message to output before the hex dump
-        data: the data
+        :param message: the message to output before the hex dump.
+        :param data: the data.
         """
         if self.logger is None or not self.logger.isEnabledFor(DEBUG):
             return

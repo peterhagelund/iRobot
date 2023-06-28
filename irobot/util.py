@@ -1,7 +1,7 @@
 """
 iRobot packet definitions.
 
-Copyright (c) 2022 Peter Hagelund
+Copyright (c) 2022. 2023 Peter Hagelund
 
 License (MIT):
 
@@ -31,9 +31,8 @@ from typing import IO
 def hex_dump(data: bytes, io: IO) -> None:
     """Emits the contents of the specified `data` to the specified `io` as hex.
 
-    Arguments:
-    data: the data bytes to emit
-    io: the IO instance to write to
+    :param data: the data bytes to emit.
+    :param io: the IO instance to write to.
     """
     offset = 0
     while offset < len(data):

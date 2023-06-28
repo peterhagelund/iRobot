@@ -1,7 +1,7 @@
 """
 iRobot packet definitions.
 
-Copyright (c) 2022 Peter Hagelund
+Copyright (c) 2022, 2023 Peter Hagelund
 
 License (MIT):
 
@@ -29,12 +29,13 @@ from abc import ABC, abstractclassmethod
 from dataclasses import dataclass
 from enum import IntEnum, unique
 from struct import unpack_from
-from typing import ClassVar
+from typing import AnyStr, ClassVar, Dict, Type
 
 
 @unique
 class ChargingState(IntEnum):
     """The various Roomba charging states."""
+
     NOT_CHARGING = 0
     """Roomba is not charging."""
     RECONDITIONING_CHARGING = 1
@@ -54,6 +55,7 @@ class ChargingState(IntEnum):
 @unique
 class Mode(IntEnum):
     """The Roomba OI modes."""
+
     OFF = 0
     """OI is off."""
     PASSIVE = 1
@@ -68,23 +70,24 @@ class Mode(IntEnum):
 
 class Packet(ABC):
     """Abstract base class for Roomba packts."""
+
     id: int = None
     """The packet `id`."""
     size: int = None
     """The packet `size`."""
-    registry: dict[str, type]
+    registry: Dict[AnyStr, Type]
     """The packet type registry."""
 
     @staticmethod
     @abstractclassmethod
     def from_bytes(data: bytes, offset: int = 0) -> "Packet":  # pragma: no cover
-        """Converts raw bytes, received from a Roomba `sensors` command to the corresponding packet implementation.
+        """
+        Convert raw bytes, received from a Roomba `sensors` command to the corresponding packet implementation.
 
-        Arguments:
-        data: the raw data bytes
-        offset: the offset, into the list of data bytes, where the packet data begins
-
-        Return: the `Packet` implementation
+        :param data: the raw data bytes.
+        :param offset: the offset, into the list of data bytes, where the packet data begins.
+        :returns: the `Packet` implementation.
+        :rtype: Packet.
         """
         pass
 
@@ -92,6 +95,7 @@ class Packet(ABC):
 @dataclass
 class Packet7(Packet):
     """Roomba packet 7 (Bumps and wheel drops)."""
+
     id: ClassVar[int] = 7
     size: ClassVar[int] = 1
 
@@ -111,6 +115,7 @@ class Packet7(Packet):
 @dataclass
 class Packet8(Packet):
     """Roomba packet 8 (Wall)."""
+
     id: ClassVar[int] = 8
     size: ClassVar[int] = 1
 
@@ -124,6 +129,7 @@ class Packet8(Packet):
 @dataclass
 class Packet9(Packet):
     """Roomba packet 9 (Cliff left)."""
+
     id: ClassVar[int] = 9
     size: ClassVar[int] = 1
 
@@ -137,6 +143,7 @@ class Packet9(Packet):
 @dataclass
 class Packet10(Packet):
     """Roomba packet 10 (Cliff front left)."""
+
     id: ClassVar[int] = 10
     size: ClassVar[int] = 1
 
@@ -150,6 +157,7 @@ class Packet10(Packet):
 @dataclass
 class Packet11(Packet):
     """Roomba packet 11 (Cliff front right)."""
+
     id: ClassVar[int] = 11
     size: ClassVar[int] = 1
 
@@ -163,6 +171,7 @@ class Packet11(Packet):
 @dataclass
 class Packet12(Packet):
     """Roomba packet 12 (Cliff right)."""
+
     id: ClassVar[int] = 12
     size: ClassVar[int] = 1
 
@@ -176,6 +185,7 @@ class Packet12(Packet):
 @dataclass
 class Packet13(Packet):
     """Roomba packet 13 (Virtual wall)."""
+
     id: ClassVar[int] = 13
     size: ClassVar[int] = 1
 
@@ -189,6 +199,7 @@ class Packet13(Packet):
 @dataclass
 class Packet14(Packet):
     """Roomba packet 14 (Wheel overcurrents)."""
+
     id: ClassVar[int] = 14
     size: ClassVar[int] = 1
 
@@ -208,45 +219,49 @@ class Packet14(Packet):
 @dataclass
 class Packet15(Packet):
     """Roomba packet 15 (Dirt detect)."""
+
     id: ClassVar[int] = 15
     size: ClassVar[int] = 1
 
     dirt_detect: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet15":
-        dirt_detect, = unpack_from(">B", data, offset=offset)
+        (dirt_detect,) = unpack_from(">B", data, offset=offset)
         return Packet15(dirt_detect)
 
 
 @dataclass
 class Packet16(Packet):
     """Roomba packet 16 (Unused)."""
+
     id: ClassVar[int] = 16
     size: ClassVar[int] = 1
 
     unused_byte: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet16":
-        unused_byte, = unpack_from(">B", data, offset=offset)
+        (unused_byte,) = unpack_from(">B", data, offset=offset)
         return Packet16(unused_byte)
 
 
 @dataclass
 class Packet17(Packet):
     """Roomba packet 17 (Infrared character omni)."""
+
     id: ClassVar[int] = 17
     size: ClassVar[int] = 1
 
     ir_character_omni: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet17":
-        ir_character_omni, = unpack_from(">B", data, offset=offset)
+        (ir_character_omni,) = unpack_from(">B", data, offset=offset)
         return Packet17(ir_character_omni)
 
 
 @dataclass
 class Packet18(Packet):
     """Roomba packet 18 (Buttons)."""
+
     id: ClassVar[int] = 18
     size: ClassVar[int] = 1
 
@@ -260,7 +275,7 @@ class Packet18(Packet):
     clean: bool = False
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet18":
-        button_bits, = unpack_from(">B", data, offset=offset)
+        (button_bits,) = unpack_from(">B", data, offset=offset)
         clock = button_bits & 0b10000000 != 0
         schedule = button_bits & 0b01000000 != 0
         day = button_bits & 0b00100000 != 0
@@ -275,39 +290,42 @@ class Packet18(Packet):
 @dataclass
 class Packet19(Packet):
     """Roomba packet 19 (Distance)."""
+
     id: ClassVar[int] = 19
     size: ClassVar[int] = 2
 
     distance: int
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet19":
-        distance, = unpack_from(">h", data, offset=offset)
+        (distance,) = unpack_from(">h", data, offset=offset)
         return Packet19(distance)
 
 
 @dataclass
 class Packet20(Packet):
     """Roomba packet 20 (Angle)."""
+
     id: ClassVar[int] = 20
     size: ClassVar[int] = 2
 
     angle: int
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet20":
-        angle, = unpack_from(">h", data, offset=offset)
+        (angle,) = unpack_from(">h", data, offset=offset)
         return Packet20(angle)
 
 
 @dataclass
 class Packet21(Packet):
     """Roomba packet 21 (Charging state)."""
+
     id: ClassVar[int] = 21
     size: ClassVar[int] = 1
 
     charging_state: ChargingState
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet21":
-        value, = unpack_from(">B", data, offset=offset)
+        (value,) = unpack_from(">B", data, offset=offset)
         try:
             charging_state = ChargingState(value)
         except ValueError:
@@ -318,162 +336,175 @@ class Packet21(Packet):
 @dataclass
 class Packet22(Packet):
     """Roomba packet 22 (Voltage)."""
+
     id: ClassVar[int] = 22
     size: ClassVar[int] = 2
 
     voltage: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet22":
-        voltage, = unpack_from(">H", data, offset=offset)
+        (voltage,) = unpack_from(">H", data, offset=offset)
         return Packet22(voltage)
 
 
 @dataclass
 class Packet23(Packet):
     """Roomba packet 23 (Current)."""
+
     id: ClassVar[int] = 23
     size: ClassVar[int] = 2
 
     current: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet23":
-        current, = unpack_from(">h", data, offset=offset)
+        (current,) = unpack_from(">h", data, offset=offset)
         return Packet23(current)
 
 
 @dataclass
 class Packet24(Packet):
     """Roomba packet 23 (Temperature)."""
+
     id: ClassVar[int] = 24
     size: ClassVar[int] = 1
 
     temperature: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet23":
-        temperature, = unpack_from(">b", data, offset=offset)
+        (temperature,) = unpack_from(">b", data, offset=offset)
         return Packet24(temperature)
 
 
 @dataclass
 class Packet25(Packet):
     """Roomba packet 25 (Battery charge)."""
+
     id: ClassVar[int] = 25
     size: ClassVar[int] = 2
 
     battery_charge: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet25":
-        battery_charge, = unpack_from(">H", data, offset=offset)
+        (battery_charge,) = unpack_from(">H", data, offset=offset)
         return Packet25(battery_charge)
 
 
 @dataclass
 class Packet26(Packet):
     """Roomba packet 25 (Battery capacity)."""
+
     id: ClassVar[int] = 26
     size: ClassVar[int] = 2
 
     battery_capacity: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet26":
-        battery_capacity, = unpack_from(">H", data, offset=offset)
+        (battery_capacity,) = unpack_from(">H", data, offset=offset)
         return Packet26(battery_capacity)
 
 
 @dataclass
 class Packet27(Packet):
     """Roomba packet 27 (Wall signal)."""
+
     id: ClassVar[int] = 27
     size: ClassVar[int] = 2
 
     wall_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet27":
-        wall_signal, = unpack_from(">H", data, offset=offset)
+        (wall_signal,) = unpack_from(">H", data, offset=offset)
         return Packet27(wall_signal)
 
 
 @dataclass
 class Packet28(Packet):
     """Roomba packet 28 (Cliff left signal)."""
+
     id: ClassVar[int] = 28
     size: ClassVar[int] = 2
 
     cliff_left_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet28":
-        cliff_left_signal, = unpack_from(">H", data, offset=offset)
+        (cliff_left_signal,) = unpack_from(">H", data, offset=offset)
         return Packet28(cliff_left_signal)
 
 
 @dataclass
 class Packet29(Packet):
     """Roomba packet 29 (Cliff front left signal)."""
+
     id: ClassVar[int] = 29
     size: ClassVar[int] = 2
 
     cliff_front_left_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet29":
-        cliff_front_left_signal, = unpack_from(">H", data, offset=offset)
+        (cliff_front_left_signal,) = unpack_from(">H", data, offset=offset)
         return Packet29(cliff_front_left_signal)
 
 
 @dataclass
 class Packet30(Packet):
     """Roomba packet 30 (Cliff front right signal)."""
+
     id: ClassVar[int] = 30
     size: ClassVar[int] = 2
 
     cliff_front_right_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet29":
-        cliff_front_right_signal, = unpack_from(">H", data, offset=offset)
+        (cliff_front_right_signal,) = unpack_from(">H", data, offset=offset)
         return Packet30(cliff_front_right_signal)
 
 
 @dataclass
 class Packet31(Packet):
     """Roomba packet 31 (Cliff right signal)."""
+
     id: ClassVar[int] = 31
     size: ClassVar[int] = 2
 
     cliff_right_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet28":
-        cliff_right_signal, = unpack_from(">H", data, offset=offset)
+        (cliff_right_signal,) = unpack_from(">H", data, offset=offset)
         return Packet31(cliff_right_signal)
 
 
 @dataclass
 class Packet32(Packet):
     """Roomba packet 32 (Unused)."""
+
     id: ClassVar[int] = 32
     size: ClassVar[int] = 1
 
     unused_byte: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet32":
-        unused_byte, = unpack_from(">B", data, offset=offset)
+        (unused_byte,) = unpack_from(">B", data, offset=offset)
         return Packet32(unused_byte)
 
 
 @dataclass
 class Packet33(Packet):
     """Roomba packet 33 (Unused)."""
+
     id: ClassVar[int] = 33
     size: ClassVar[int] = 2
 
     unused_short: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet33":
-        unused_short, = unpack_from(">H", data, offset=offset)
+        (unused_short,) = unpack_from(">H", data, offset=offset)
         return Packet33(unused_short)
 
 
 @dataclass
 class Packet34(Packet):
     """Roomba packet 34 (Charging sources available)."""
+
     id: ClassVar[int] = 34
     size: ClassVar[int] = 1
 
@@ -481,7 +512,7 @@ class Packet34(Packet):
     internal_charger: bool = False
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet34":
-        source_bits, = unpack_from(">B", data, offset=offset)
+        (source_bits,) = unpack_from(">B", data, offset=offset)
         home_base = source_bits & 0b00000010 != 0
         internal_charger = source_bits & 0b00000001 != 0
         return Packet34(home_base, internal_charger)
@@ -490,13 +521,14 @@ class Packet34(Packet):
 @dataclass
 class Packet35(Packet):
     """Roomba packet 35 (OI mode)."""
+
     id: ClassVar[int] = 35
     size: ClassVar[int] = 1
 
     mode: Mode = Mode.OFF
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet35":
-        value, = unpack_from(">B", data, offset=offset)
+        (value,) = unpack_from(">B", data, offset=offset)
         try:
             mode = Mode(value)
         except ValueError:
@@ -507,26 +539,28 @@ class Packet35(Packet):
 @dataclass
 class Packet36(Packet):
     """Roomba packet 36 (Song number)."""
+
     id: ClassVar[int] = 36
     size: ClassVar[int] = 1
 
     song: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet36":
-        song, = unpack_from(">B", data, offset=offset)
+        (song,) = unpack_from(">B", data, offset=offset)
         return Packet36(song)
 
 
 @dataclass
 class Packet37(Packet):
     """Roomba packet 37 (Song playing)."""
+
     id: ClassVar[int] = 37
     size: ClassVar[int] = 1
 
     song_playing: bool = False
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet37":
-        song_bits, = unpack_from(">B", data, offset=offset)
+        (song_bits,) = unpack_from(">B", data, offset=offset)
         song = song_bits & 0b00000001 != 0
         return Packet37(song)
 
@@ -534,97 +568,105 @@ class Packet37(Packet):
 @dataclass
 class Packet38(Packet):
     """Roomba packet 38 (Number of stream packets)."""
+
     id: ClassVar[int] = 38
     size: ClassVar[int] = 1
 
     stream_packet_count: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet38":
-        stream_packet_count, = unpack_from(">B", data, offset=offset)
+        (stream_packet_count,) = unpack_from(">B", data, offset=offset)
         return Packet38(stream_packet_count)
 
 
 @dataclass
 class Packet39(Packet):
     """Roomba packet 39 (Requested velocity)."""
+
     id: ClassVar[int] = 39
     size: ClassVar[int] = 2
 
     requested_velocity: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet39":
-        requested_velocity, = unpack_from(">h", data, offset=offset)
+        (requested_velocity,) = unpack_from(">h", data, offset=offset)
         return Packet39(requested_velocity)
 
 
 @dataclass
 class Packet40(Packet):
     """Roomba packet 40 (Requested radius)."""
+
     id: ClassVar[int] = 40
     size: ClassVar[int] = 2
 
     requested_radius: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet40":
-        requested_radius, = unpack_from(">h", data, offset=offset)
+        (requested_radius,) = unpack_from(">h", data, offset=offset)
         return Packet40(requested_radius)
 
 
 @dataclass
 class Packet41(Packet):
     """Roomba packet 41 (Requested right velocity)."""
+
     id: ClassVar[int] = 41
     size: ClassVar[int] = 2
 
     requested_right_velocity: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet41":
-        requested_right_velocity, = unpack_from(">h", data, offset=offset)
+        (requested_right_velocity,) = unpack_from(">h", data, offset=offset)
         return Packet41(requested_right_velocity)
 
 
 @dataclass
 class Packet42(Packet):
     """Roomba packet 42 (Requested left velocity)."""
+
     id: ClassVar[int] = 42
     size: ClassVar[int] = 2
 
     requested_left_velocity: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet42":
-        requested_left_velocity, = unpack_from(">h", data, offset=offset)
+        (requested_left_velocity,) = unpack_from(">h", data, offset=offset)
         return Packet42(requested_left_velocity)
 
 
 @dataclass
 class Packet43(Packet):
     """Roomba packet 43 (Right encoder counts)."""
+
     id: ClassVar[int] = 43
     size: ClassVar[int] = 2
 
     right_encoder_counts: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet43":
-        right_encoder_counts, = unpack_from(">H", data, offset=offset)
+        (right_encoder_counts,) = unpack_from(">H", data, offset=offset)
         return Packet43(right_encoder_counts)
 
 
 @dataclass
 class Packet44(Packet):
     """Roomba packet 44 (Left encoder counts)."""
+
     id: ClassVar[int] = 44
     size: ClassVar[int] = 2
 
     left_encoder_counts: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet44":
-        left_encoder_counts, = unpack_from(">H", data, offset=offset)
+        (left_encoder_counts,) = unpack_from(">H", data, offset=offset)
         return Packet44(left_encoder_counts)
 
 
 @dataclass
 class Packet45(Packet):
     """Roomba packet 45 (Light bumper)."""
+
     id: ClassVar[int] = 45
     size: ClassVar[int] = 1
 
@@ -636,7 +678,7 @@ class Packet45(Packet):
     bumper_left: bool = False
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet45":
-        bumper_bits, = unpack_from(">B", data, offset=offset)
+        (bumper_bits,) = unpack_from(">B", data, offset=offset)
         bumper_right = bumper_bits & 0b00100000 != 0
         bumper_front_right = bumper_bits & 0b00010000 != 0
         bumper_center_right = bumper_bits & 0b00001000 != 0
@@ -649,169 +691,182 @@ class Packet45(Packet):
 @dataclass
 class Packet46(Packet):
     """Roomba packet 46 (Light bump left signal)."""
+
     id: ClassVar[int] = 46
     size: ClassVar[int] = 2
 
     bump_left_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet46":
-        bump_left_signal, = unpack_from(">H", data, offset=offset)
+        (bump_left_signal,) = unpack_from(">H", data, offset=offset)
         return Packet46(bump_left_signal)
 
 
 @dataclass
 class Packet47(Packet):
     """Roomba packet 47 (Light bump front left signal)."""
+
     id: ClassVar[int] = 47
     size: ClassVar[int] = 2
 
     bump_front_left_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet47":
-        bump_front_left_signal, = unpack_from(">H", data, offset=offset)
+        (bump_front_left_signal,) = unpack_from(">H", data, offset=offset)
         return Packet47(bump_front_left_signal)
 
 
 @dataclass
 class Packet48(Packet):
     """Roomba packet 48 (Light bump center left signal)."""
+
     id: ClassVar[int] = 48
     size: ClassVar[int] = 2
 
     bump_center_left_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet48":
-        bump_center_left_signal, = unpack_from(">H", data, offset=offset)
+        (bump_center_left_signal,) = unpack_from(">H", data, offset=offset)
         return Packet48(bump_center_left_signal)
 
 
 @dataclass
 class Packet49(Packet):
     """Roomba packet 49 (Light bump center right signal)."""
+
     id: ClassVar[int] = 49
     size: ClassVar[int] = 2
 
     bump_center_right_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet49":
-        bump_center_right_signal, = unpack_from(">H", data, offset=offset)
+        (bump_center_right_signal,) = unpack_from(">H", data, offset=offset)
         return Packet49(bump_center_right_signal)
 
 
 @dataclass
 class Packet50(Packet):
     """Roomba packet 50 (Light bump front right signal)."""
+
     id: ClassVar[int] = 50
     size: ClassVar[int] = 2
 
     bump_front_right_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet50":
-        bump_front_right_signal, = unpack_from(">H", data, offset=offset)
+        (bump_front_right_signal,) = unpack_from(">H", data, offset=offset)
         return Packet50(bump_front_right_signal)
 
 
 @dataclass
 class Packet51(Packet):
     """Roomba packet 51 (Light bump right signal)."""
+
     id: ClassVar[int] = 51
     size: ClassVar[int] = 2
 
     bump_right_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet51":
-        bump_right_signal, = unpack_from(">H", data, offset=offset)
+        (bump_right_signal,) = unpack_from(">H", data, offset=offset)
         return Packet51(bump_right_signal)
 
 
 @dataclass
 class Packet52(Packet):
     """Roomba packet 52 (Infrared character left)."""
+
     id: ClassVar[int] = 52
     size: ClassVar[int] = 1
 
     ir_character_left: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet52":
-        ir_character_left, = unpack_from(">B", data, offset=offset)
+        (ir_character_left,) = unpack_from(">B", data, offset=offset)
         return Packet52(ir_character_left)
 
 
 @dataclass
 class Packet53(Packet):
     """Roomba packet 53 (Infrared character right)."""
+
     id: ClassVar[int] = 53
     size: ClassVar[int] = 1
 
     ir_character_right: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet53":
-        ir_character_right, = unpack_from(">B", data, offset=offset)
+        (ir_character_right,) = unpack_from(">B", data, offset=offset)
         return Packet53(ir_character_right)
 
 
 @dataclass
 class Packet54(Packet):
     """Roomba packet 54 (Left motor current)."""
+
     id: ClassVar[int] = 54
     size: ClassVar[int] = 2
 
     left_motor_current: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet54":
-        left_motor_current, = unpack_from(">h", data, offset=offset)
+        (left_motor_current,) = unpack_from(">h", data, offset=offset)
         return Packet54(left_motor_current)
 
 
 @dataclass
 class Packet55(Packet):
     """Roomba packet 55 (Right motor current)."""
+
     id: ClassVar[int] = 55
     size: ClassVar[int] = 2
 
     right_motor_current: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet55":
-        right_motor_current, = unpack_from(">h", data, offset=offset)
+        (right_motor_current,) = unpack_from(">h", data, offset=offset)
         return Packet55(right_motor_current)
 
 
 @dataclass
 class Packet56(Packet):
     """Roomba packet 56 (Main brush motor current)."""
+
     id: ClassVar[int] = 56
     size: ClassVar[int] = 2
 
     main_brush_motor_current: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet56":
-        main_brush_motor_current, = unpack_from(">h", data, offset=offset)
+        (main_brush_motor_current,) = unpack_from(">h", data, offset=offset)
         return Packet56(main_brush_motor_current)
 
 
 @dataclass
 class Packet57(Packet):
     """Roomba packet 57 (Side brush motor current)."""
+
     id: ClassVar[int] = 57
     size: ClassVar[int] = 2
 
     side_brush_motor_current: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet57":
-        side_brush_motor_current, = unpack_from(">h", data, offset=offset)
+        (side_brush_motor_current,) = unpack_from(">h", data, offset=offset)
         return Packet57(side_brush_motor_current)
 
 
 @dataclass
 class Packet58(Packet):
     """Roomba packet 58 (Stasis)."""
+
     id: ClassVar[int] = 58
     size: ClassVar[int] = 1
 
     forward_progress: bool = False
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet58":
-        stasis_bits, = unpack_from(">B", data, offset=offset)
+        (stasis_bits,) = unpack_from(">B", data, offset=offset)
         forward_progress = stasis_bits & 0b00000001 != 0
         return Packet58(forward_progress)
 
@@ -819,6 +874,7 @@ class Packet58(Packet):
 @dataclass
 class Packet0(Packet):
     """Roomba packet 0 (Group packet for packets 7 to 26)."""
+
     id: ClassVar[int] = 0
     size: ClassVar[int] = 26
 
@@ -884,14 +940,34 @@ class Packet0(Packet):
         offset += Packet25.size
         packet_26 = Packet26.from_bytes(data, offset=offset)
 
-        return Packet0(packet_7, packet_8, packet_9,
-                       packet_10, packet_11, packet_12, packet_13, packet_14, packet_15, packet_16, packet_17, packet_18, packet_19,
-                       packet_20, packet_21, packet_22, packet_23, packet_24, packet_25, packet_26)
+        return Packet0(
+            packet_7,
+            packet_8,
+            packet_9,
+            packet_10,
+            packet_11,
+            packet_12,
+            packet_13,
+            packet_14,
+            packet_15,
+            packet_16,
+            packet_17,
+            packet_18,
+            packet_19,
+            packet_20,
+            packet_21,
+            packet_22,
+            packet_23,
+            packet_24,
+            packet_25,
+            packet_26,
+        )
 
 
 @dataclass
 class Packet1(Packet):
     """Roomba packet 1 (Group packet for packets 7 to 16)."""
+
     id: ClassVar[int] = 1
     size: ClassVar[int] = 10
 
@@ -927,13 +1003,13 @@ class Packet1(Packet):
         offset += Packet15.size
         packet_16 = Packet16.from_bytes(data, offset=offset)
 
-        return Packet1(packet_7, packet_8, packet_9,
-                       packet_10, packet_11, packet_12, packet_13, packet_14, packet_15, packet_16)
+        return Packet1(packet_7, packet_8, packet_9, packet_10, packet_11, packet_12, packet_13, packet_14, packet_15, packet_16)
 
 
 @dataclass
 class Packet2(Packet):
     """Roomba packet 2 (Group packet for packets 17 to 20)."""
+
     id: ClassVar[int] = 2
     size: ClassVar[int] = 6
 
@@ -957,6 +1033,7 @@ class Packet2(Packet):
 @dataclass
 class Packet3(Packet):
     """Roomba packet 3 (Group packet for packets 21 to 26)."""
+
     id: ClassVar[int] = 3
     size: ClassVar[int] = 10
 
@@ -986,6 +1063,7 @@ class Packet3(Packet):
 @dataclass
 class Packet4(Packet):
     """Roomba packet 4 (Group packet for packets 27 to 34)."""
+
     id: ClassVar[int] = 4
     size: ClassVar[int] = 14
 
@@ -1020,6 +1098,7 @@ class Packet4(Packet):
 @dataclass
 class Packet5(Packet):
     """Roomba packet 5 (Group packet for packets 35 to 42)."""
+
     id: ClassVar[int] = 5
     size: ClassVar[int] = 12
 
@@ -1054,6 +1133,7 @@ class Packet5(Packet):
 @dataclass
 class Packet6(Packet):
     """Roomba packet 6 (Group packet for packets 7 to 42)."""
+
     id: ClassVar[int] = 6
     size: ClassVar[int] = 52
 
@@ -1167,16 +1247,50 @@ class Packet6(Packet):
         offset += Packet41.size
         packet_42 = Packet42.from_bytes(data, offset=offset)
 
-        return Packet6(packet_7, packet_8, packet_9,
-                       packet_10, packet_11, packet_12, packet_13, packet_14, packet_15, packet_16, packet_17, packet_18, packet_19,
-                       packet_20, packet_21, packet_22, packet_23, packet_24, packet_25, packet_26, packet_27, packet_28, packet_29,
-                       packet_30, packet_31, packet_32, packet_33, packet_34, packet_35, packet_36, packet_37, packet_38, packet_39,
-                       packet_40, packet_41, packet_42)
+        return Packet6(
+            packet_7,
+            packet_8,
+            packet_9,
+            packet_10,
+            packet_11,
+            packet_12,
+            packet_13,
+            packet_14,
+            packet_15,
+            packet_16,
+            packet_17,
+            packet_18,
+            packet_19,
+            packet_20,
+            packet_21,
+            packet_22,
+            packet_23,
+            packet_24,
+            packet_25,
+            packet_26,
+            packet_27,
+            packet_28,
+            packet_29,
+            packet_30,
+            packet_31,
+            packet_32,
+            packet_33,
+            packet_34,
+            packet_35,
+            packet_36,
+            packet_37,
+            packet_38,
+            packet_39,
+            packet_40,
+            packet_41,
+            packet_42,
+        )
 
 
 @dataclass
 class Packet100(Packet):
     """Roomba packet 100 (Group packet for packets 7 to 58)."""
+
     id: ClassVar[int] = 100
     size: ClassVar[int] = 80
 
@@ -1338,17 +1452,66 @@ class Packet100(Packet):
         offset += Packet57.size
         packet_58 = Packet58.from_bytes(data, offset=offset)
 
-        return Packet100(packet_7, packet_8, packet_9,
-                         packet_10, packet_11, packet_12, packet_13, packet_14, packet_15, packet_16, packet_17, packet_18, packet_19,
-                         packet_20, packet_21, packet_22, packet_23, packet_24, packet_25, packet_26, packet_27, packet_28, packet_29,
-                         packet_30, packet_31, packet_32, packet_33, packet_34, packet_35, packet_36, packet_37, packet_38, packet_39,
-                         packet_40, packet_41, packet_42, packet_43,  packet_44, packet_45, packet_46, packet_47, packet_48, packet_49,
-                         packet_50, packet_51, packet_52, packet_53, packet_54, packet_55, packet_56, packet_57, packet_58)
+        return Packet100(
+            packet_7,
+            packet_8,
+            packet_9,
+            packet_10,
+            packet_11,
+            packet_12,
+            packet_13,
+            packet_14,
+            packet_15,
+            packet_16,
+            packet_17,
+            packet_18,
+            packet_19,
+            packet_20,
+            packet_21,
+            packet_22,
+            packet_23,
+            packet_24,
+            packet_25,
+            packet_26,
+            packet_27,
+            packet_28,
+            packet_29,
+            packet_30,
+            packet_31,
+            packet_32,
+            packet_33,
+            packet_34,
+            packet_35,
+            packet_36,
+            packet_37,
+            packet_38,
+            packet_39,
+            packet_40,
+            packet_41,
+            packet_42,
+            packet_43,
+            packet_44,
+            packet_45,
+            packet_46,
+            packet_47,
+            packet_48,
+            packet_49,
+            packet_50,
+            packet_51,
+            packet_52,
+            packet_53,
+            packet_54,
+            packet_55,
+            packet_56,
+            packet_57,
+            packet_58,
+        )
 
 
 @dataclass
 class Packet101(Packet):
     """Roomba packet 101 (Group packet for packets 43 to 58)."""
+
     id: ClassVar[int] = 101
     size: ClassVar[int] = 28
 
@@ -1401,13 +1564,13 @@ class Packet101(Packet):
         packet_57 = Packet57.from_bytes(data, offset=offset)
         offset += Packet57.size
         packet_58 = Packet58.from_bytes(data, offset=offset)
-        return Packet101(packet_43,  packet_44, packet_45, packet_46, packet_47, packet_48, packet_49,
-                         packet_50, packet_51, packet_52, packet_53, packet_54, packet_55, packet_56, packet_57, packet_58)
+        return Packet101(packet_43, packet_44, packet_45, packet_46, packet_47, packet_48, packet_49, packet_50, packet_51, packet_52, packet_53, packet_54, packet_55, packet_56, packet_57, packet_58)
 
 
 @dataclass
 class Packet106(Packet):
     """Roomba packet 106 (Group packet for packets 46 to 51)."""
+
     id: ClassVar[int] = 106
     size: ClassVar[int] = 12
 
@@ -1436,6 +1599,7 @@ class Packet106(Packet):
 @dataclass
 class Packet107(Packet):
     """Roomba packet 107 (Group packet for packets 54 to 58)."""
+
     id: ClassVar[int] = 107
     size: ClassVar[int] = 9
 
