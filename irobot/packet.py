@@ -1,7 +1,7 @@
 """
 iRobot packet definitions.
 
-Copyright (c) 2022, 2023 Peter Hagelund
+Copyright (c) 2022, 2023, 2024 Peter Hagelund
 
 License (MIT):
 
@@ -69,7 +69,7 @@ class Mode(IntEnum):
 
 
 class Packet(ABC):
-    """Abstract base class for Roomba packts."""
+    """Abstract base class for Roomba packets."""
 
     id: int = None
     """The packet `id`."""
@@ -81,13 +81,19 @@ class Packet(ABC):
     @staticmethod
     @abstractclassmethod
     def from_bytes(data: bytes, offset: int = 0) -> "Packet":  # pragma: no cover
-        """
-        Convert raw bytes, received from a Roomba `sensors` command to the corresponding packet implementation.
+        """Converts raw bytes, received from a Roomba `sensors` command to the corresponding packet implementation.
 
-        :param data: the raw data bytes.
-        :param offset: the offset, into the list of data bytes, where the packet data begins.
-        :returns: the `Packet` implementation.
-        :rtype: Packet.
+        Parameters
+        ----------
+        data : bytes
+            The raw data bytes.
+        offset : int
+            The offset, into the list of data bytes, where the packet data begins.
+
+        Returns
+        -------
+        Packet
+            The `Packet` implementation.
         """
         pass
 

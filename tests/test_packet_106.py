@@ -3,8 +3,15 @@ Tests for Packet106.
 """
 
 
-from irobot.packet import (Packet46, Packet47, Packet48, Packet49, Packet50,
-                           Packet51, Packet106)
+from irobot.packet import (
+    Packet46,
+    Packet47,
+    Packet48,
+    Packet49,
+    Packet50,
+    Packet51,
+    Packet106,
+)
 
 
 def test_id():
@@ -19,14 +26,22 @@ def test_size():
 
 def test_from_bytes():
     """Tests `from_bytes`."""
-    data = bytes([
-        0x05, 0xdc,  # Packet 46
-        0x06, 0x40,  # Packet 47
-        0x06, 0xa4,  # Packet 48
-        0x07, 0x08,  # Packet 49
-        0x07, 0x6c,  # Packet 50
-        0x07, 0xd0,  # Packet 51
-    ])
+    data = bytes(
+        [
+            0x05,
+            0xDC,  # Packet 46
+            0x06,
+            0x40,  # Packet 47
+            0x06,
+            0xA4,  # Packet 48
+            0x07,
+            0x08,  # Packet 49
+            0x07,
+            0x6C,  # Packet 50
+            0x07,
+            0xD0,  # Packet 51
+        ]
+    )
     assert len(data) == Packet106.size
     packet = Packet106.from_bytes(data)
     assert packet is not None

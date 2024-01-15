@@ -18,7 +18,7 @@ def test_size():
 
 def test_from_bytes_running():
     """Tests `from_bytes` with the Roomba charging."""
-    data = bytes([0xf0, 0x60])
+    data = bytes([0xF0, 0x60])
     packet = Packet23.from_bytes(data)
     assert packet is not None
     assert type(packet) == Packet23
@@ -27,7 +27,7 @@ def test_from_bytes_running():
 
 def test_from_bytes_charging():
     """Tests `from_bytes` with the Roomba running."""
-    data = bytes([0x0f, 0xa0])
+    data = bytes([0x0F, 0xA0])
     packet = Packet23.from_bytes(data)
     assert packet is not None
     assert type(packet) == Packet23

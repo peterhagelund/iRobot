@@ -3,10 +3,25 @@ Tests for Packet101.
 """
 
 
-from irobot.packet import (Packet43, Packet44, Packet45, Packet46, Packet47,
-                           Packet48, Packet49, Packet50, Packet51, Packet52,
-                           Packet53, Packet54, Packet55, Packet56, Packet57,
-                           Packet58, Packet101)
+from irobot.packet import (
+    Packet43,
+    Packet44,
+    Packet45,
+    Packet46,
+    Packet47,
+    Packet48,
+    Packet49,
+    Packet50,
+    Packet51,
+    Packet52,
+    Packet53,
+    Packet54,
+    Packet55,
+    Packet56,
+    Packet57,
+    Packet58,
+    Packet101,
+)
 
 
 def test_id():
@@ -21,24 +36,38 @@ def test_size():
 
 def test_from_bytes():
     """Tests `from_bytes`."""
-    data = bytes([
-        0x9c, 0x40,  # Packet 43
-        0xc3, 0x50,  # Packet 44
-        0b00111111,  # Packet 45
-        0x05, 0xdc,  # Packet 46
-        0x06, 0x40,  # Packet 47
-        0x06, 0xa4,  # Packet 48
-        0x07, 0x08,  # Packet 49
-        0x07, 0x6c,  # Packet 50
-        0x07, 0xd0,  # Packet 51
-        42,          # Packet 52
-        42,          # Packet 53
-        0x03, 0xe8,  # Packet 54
-        0xfc, 0x18,  # Packet 55
-        0x01, 0xf4,  # Packet 56
-        0x01, 0x2c,  # Packet 57
-        0b00000001,  # Packet 58
-    ])
+    data = bytes(
+        [
+            0x9C,
+            0x40,  # Packet 43
+            0xC3,
+            0x50,  # Packet 44
+            0b00111111,  # Packet 45
+            0x05,
+            0xDC,  # Packet 46
+            0x06,
+            0x40,  # Packet 47
+            0x06,
+            0xA4,  # Packet 48
+            0x07,
+            0x08,  # Packet 49
+            0x07,
+            0x6C,  # Packet 50
+            0x07,
+            0xD0,  # Packet 51
+            42,  # Packet 52
+            42,  # Packet 53
+            0x03,
+            0xE8,  # Packet 54
+            0xFC,
+            0x18,  # Packet 55
+            0x01,
+            0xF4,  # Packet 56
+            0x01,
+            0x2C,  # Packet 57
+            0b00000001,  # Packet 58
+        ]
+    )
     assert len(data) == Packet101.size
     packet = Packet101.from_bytes(data)
     assert packet is not None

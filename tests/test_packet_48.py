@@ -18,7 +18,7 @@ def test_size():
 
 def test_from_bytes():
     """Tests `from_bytes`."""
-    data = bytes([0x06, 0xa4])
+    data = bytes([0x06, 0xA4])
     packet = Packet48.from_bytes(data)
     assert packet is not None
     assert type(packet) == Packet48

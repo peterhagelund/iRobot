@@ -3,8 +3,7 @@ Tests for Packet107.
 """
 
 
-from irobot.packet import (Packet54, Packet55, Packet56, Packet57, Packet58,
-                           Packet107)
+from irobot.packet import Packet54, Packet55, Packet56, Packet57, Packet58, Packet107
 
 
 def test_id():
@@ -19,13 +18,19 @@ def test_size():
 
 def test_from_bytes():
     """Tests `from_bytes`."""
-    data = bytes([
-        0x03, 0xe8,  # Packet 54
-        0xfc, 0x18,  # Packet 55
-        0x01, 0xf4,  # Packet 56
-        0x01, 0x2c,  # Packet 57
-        0b00000001,  # Packet 58
-    ])
+    data = bytes(
+        [
+            0x03,
+            0xE8,  # Packet 54
+            0xFC,
+            0x18,  # Packet 55
+            0x01,
+            0xF4,  # Packet 56
+            0x01,
+            0x2C,  # Packet 57
+            0b00000001,  # Packet 58
+        ]
+    )
     assert len(data) == Packet107.size
     packet = Packet107.from_bytes(data)
     assert packet is not None

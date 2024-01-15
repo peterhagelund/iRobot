@@ -27,7 +27,7 @@ def test_from_bytes_valid_mode():
 
 def test_from_bytes_unknown_mode():
     """Tests `from_bytes` with an unknown OI mode."""
-    data = bytes([0x0a])
+    data = bytes([0x0A])
     packet = Packet35.from_bytes(data)
     assert packet is not None
     assert type(packet) == Packet35

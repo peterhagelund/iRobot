@@ -18,7 +18,7 @@ def test_size():
 
 def test_from_bytes_counter_clockwise():
     """Tests `from_bytes` with a counter-clockwise angle."""
-    data = bytes([0x00, 0x5a])
+    data = bytes([0x00, 0x5A])
     packet = Packet20.from_bytes(data)
     assert packet is not None
     assert type(packet) == Packet20
@@ -27,7 +27,7 @@ def test_from_bytes_counter_clockwise():
 
 def test_from_bytes_clockwise():
     """Tests `from_bytes` with a clockwise angle."""
-    data = bytes([0xff, 0xa6])
+    data = bytes([0xFF, 0xA6])
     packet = Packet20.from_bytes(data)
     assert packet is not None
     assert type(packet) == Packet20

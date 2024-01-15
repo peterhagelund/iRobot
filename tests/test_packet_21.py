@@ -27,7 +27,7 @@ def test_from_bytes_valid_state():
 
 def test_from_bytes_unknown_state():
     """Tests `from_bytes` with an unknown charging state."""
-    data = bytes([0x0a])
+    data = bytes([0x0A])
     packet = Packet21.from_bytes(data)
     assert packet is not None
     assert type(packet) == Packet21

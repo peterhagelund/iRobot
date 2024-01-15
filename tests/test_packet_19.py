@@ -18,7 +18,7 @@ def test_size():
 
 def test_from_bytes_forward():
     """Tests `from_bytes` with a forward distance."""
-    data = bytes([0x01, 0x2c])
+    data = bytes([0x01, 0x2C])
     packet = Packet19.from_bytes(data)
     assert packet is not None
     assert type(packet) == Packet19
@@ -27,7 +27,7 @@ def test_from_bytes_forward():
 
 def test_from_bytes_backward():
     """Tests `from_bytes` with a backward distance."""
-    data = bytes([0xff, 0xc8])
+    data = bytes([0xFF, 0xC8])
     packet = Packet19.from_bytes(data)
     assert packet is not None
     assert type(packet) == Packet19

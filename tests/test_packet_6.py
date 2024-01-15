@@ -3,14 +3,47 @@ Tests for Packet6.
 """
 
 
-from irobot.packet import (ChargingState, Mode, Packet6, Packet7, Packet8,
-                           Packet9, Packet10, Packet11, Packet12, Packet13,
-                           Packet14, Packet15, Packet16, Packet17, Packet18,
-                           Packet19, Packet20, Packet21, Packet22, Packet23,
-                           Packet24, Packet25, Packet26, Packet27, Packet28,
-                           Packet29, Packet30, Packet31, Packet32, Packet33,
-                           Packet34, Packet35, Packet36, Packet37, Packet38,
-                           Packet39, Packet40, Packet41, Packet42)
+from irobot.packet import (
+    ChargingState,
+    Mode,
+    Packet6,
+    Packet7,
+    Packet8,
+    Packet9,
+    Packet10,
+    Packet11,
+    Packet12,
+    Packet13,
+    Packet14,
+    Packet15,
+    Packet16,
+    Packet17,
+    Packet18,
+    Packet19,
+    Packet20,
+    Packet21,
+    Packet22,
+    Packet23,
+    Packet24,
+    Packet25,
+    Packet26,
+    Packet27,
+    Packet28,
+    Packet29,
+    Packet30,
+    Packet31,
+    Packet32,
+    Packet33,
+    Packet34,
+    Packet35,
+    Packet36,
+    Packet37,
+    Packet38,
+    Packet39,
+    Packet40,
+    Packet41,
+    Packet42,
+)
 
 
 def test_id():
@@ -25,44 +58,62 @@ def test_size():
 
 def test_from_bytes():
     """Tests `from_bytes`."""
-    data = bytes([
-        0b00001010,  # Packet 7
-        0b00000001,  # Packet 8
-        0b00000001,  # Packet 9
-        0b00000000,  # Packet 10
-        0b00000001,  # Packet 11
-        0b00000000,  # Packet 12
-        0b00000001,  # Packet 13
-        0b00001000,  # Packet 14
-        0x7b,        # Packet 15
-        0x00,        # Packet 16
-        0x2a,        # Packet 17
-        0b10101010,  # Packet 18
-        0x01, 0x2c,  # Packet 19
-        0xff, 0xa6,  # Packet 20
-        0x02,        # Packet 21
-        0x42, 0x68,  # Packet 22
-        0xf0, 0x60,  # Packet 23
-        0x16,        # Packet 24
-        0x13, 0x88,  # Packet 25
-        0x27, 0x10,  # Packet 26
-        0x02, 0x2b,  # Packet 27
-        0x07, 0xd0,  # Packet 28
-        0x08, 0x34,  # Packet 29
-        0x08, 0x98,  # Packet 30
-        0x08, 0xfc,  # Packet 31
-        0x00,        # Packet 32
-        0x00, 0x00,  # Packet 33
-        0b00000011,  # Packet 34
-        0x02,        # Packet 35
-        0x01,        # Packet 36
-        0b00000001,  # Packet 37
-        0x01,        # Packet 38
-        0xff, 0x38,  # Packet 39
-        0x01, 0x2c,  # Packet 40
-        0xff, 0x38,  # Packet 41
-        0x00, 0xc8,  # Packet 42
-    ])
+    data = bytes(
+        [
+            0b00001010,  # Packet 7
+            0b00000001,  # Packet 8
+            0b00000001,  # Packet 9
+            0b00000000,  # Packet 10
+            0b00000001,  # Packet 11
+            0b00000000,  # Packet 12
+            0b00000001,  # Packet 13
+            0b00001000,  # Packet 14
+            0x7B,  # Packet 15
+            0x00,  # Packet 16
+            0x2A,  # Packet 17
+            0b10101010,  # Packet 18
+            0x01,
+            0x2C,  # Packet 19
+            0xFF,
+            0xA6,  # Packet 20
+            0x02,  # Packet 21
+            0x42,
+            0x68,  # Packet 22
+            0xF0,
+            0x60,  # Packet 23
+            0x16,  # Packet 24
+            0x13,
+            0x88,  # Packet 25
+            0x27,
+            0x10,  # Packet 26
+            0x02,
+            0x2B,  # Packet 27
+            0x07,
+            0xD0,  # Packet 28
+            0x08,
+            0x34,  # Packet 29
+            0x08,
+            0x98,  # Packet 30
+            0x08,
+            0xFC,  # Packet 31
+            0x00,  # Packet 32
+            0x00,
+            0x00,  # Packet 33
+            0b00000011,  # Packet 34
+            0x02,  # Packet 35
+            0x01,  # Packet 36
+            0b00000001,  # Packet 37
+            0x01,  # Packet 38
+            0xFF,
+            0x38,  # Packet 39
+            0x01,
+            0x2C,  # Packet 40
+            0xFF,
+            0x38,  # Packet 41
+            0x00,
+            0xC8,  # Packet 42
+        ]
+    )
     assert len(data) == Packet6.size
     packet = Packet6.from_bytes(data)
     assert packet is not None
