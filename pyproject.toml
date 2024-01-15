@@ -1,0 +1,24 @@
+[project]
+name = "iRobot"
+description = "iRobot Roomba API"
+version = "1.0.1"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "Peter Hagelund", email = "peterhagelund@mac.com" }]
+dependencies = ["pyserial"]
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-cov"]
+
+[project.urls]
+homepage = "https://github.com/peterhagelund/iRobot"
+
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
