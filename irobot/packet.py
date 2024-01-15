@@ -104,7 +104,6 @@ class Packet7(Packet):
 
     id: ClassVar[int] = 7
     size: ClassVar[int] = 1
-
     wheel_drop_left: bool = False
     wheel_drop_right: bool = False
     bump_left: bool = False
@@ -124,7 +123,6 @@ class Packet8(Packet):
 
     id: ClassVar[int] = 8
     size: ClassVar[int] = 1
-
     wall: bool = False
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet8":
@@ -138,7 +136,6 @@ class Packet9(Packet):
 
     id: ClassVar[int] = 9
     size: ClassVar[int] = 1
-
     cliff_left: bool = False
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet9":
@@ -152,7 +149,6 @@ class Packet10(Packet):
 
     id: ClassVar[int] = 10
     size: ClassVar[int] = 1
-
     cliff_front_left: bool = False
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet10":
@@ -166,7 +162,6 @@ class Packet11(Packet):
 
     id: ClassVar[int] = 11
     size: ClassVar[int] = 1
-
     cliff_front_right: bool = False
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet11":
@@ -180,7 +175,6 @@ class Packet12(Packet):
 
     id: ClassVar[int] = 12
     size: ClassVar[int] = 1
-
     cliff_right: bool = False
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet12":
@@ -194,7 +188,6 @@ class Packet13(Packet):
 
     id: ClassVar[int] = 13
     size: ClassVar[int] = 1
-
     virtual_wall: bool = False
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet13":
@@ -208,7 +201,6 @@ class Packet14(Packet):
 
     id: ClassVar[int] = 14
     size: ClassVar[int] = 1
-
     left_wheel: bool = False
     right_wheel: bool = False
     main_brush: bool = False
@@ -228,7 +220,6 @@ class Packet15(Packet):
 
     id: ClassVar[int] = 15
     size: ClassVar[int] = 1
-
     dirt_detect: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet15":
@@ -242,7 +233,6 @@ class Packet16(Packet):
 
     id: ClassVar[int] = 16
     size: ClassVar[int] = 1
-
     unused_byte: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet16":
@@ -256,7 +246,6 @@ class Packet17(Packet):
 
     id: ClassVar[int] = 17
     size: ClassVar[int] = 1
-
     ir_character_omni: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet17":
@@ -270,7 +259,6 @@ class Packet18(Packet):
 
     id: ClassVar[int] = 18
     size: ClassVar[int] = 1
-
     clock: bool = False
     schedule: bool = False
     day: bool = False
@@ -299,7 +287,6 @@ class Packet19(Packet):
 
     id: ClassVar[int] = 19
     size: ClassVar[int] = 2
-
     distance: int
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet19":
@@ -313,7 +300,6 @@ class Packet20(Packet):
 
     id: ClassVar[int] = 20
     size: ClassVar[int] = 2
-
     angle: int
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet20":
@@ -327,7 +313,6 @@ class Packet21(Packet):
 
     id: ClassVar[int] = 21
     size: ClassVar[int] = 1
-
     charging_state: ChargingState
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet21":
@@ -345,7 +330,6 @@ class Packet22(Packet):
 
     id: ClassVar[int] = 22
     size: ClassVar[int] = 2
-
     voltage: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet22":
@@ -359,7 +343,6 @@ class Packet23(Packet):
 
     id: ClassVar[int] = 23
     size: ClassVar[int] = 2
-
     current: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet23":
@@ -373,7 +356,6 @@ class Packet24(Packet):
 
     id: ClassVar[int] = 24
     size: ClassVar[int] = 1
-
     temperature: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet23":
@@ -387,7 +369,6 @@ class Packet25(Packet):
 
     id: ClassVar[int] = 25
     size: ClassVar[int] = 2
-
     battery_charge: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet25":
@@ -401,7 +382,6 @@ class Packet26(Packet):
 
     id: ClassVar[int] = 26
     size: ClassVar[int] = 2
-
     battery_capacity: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet26":
@@ -415,7 +395,6 @@ class Packet27(Packet):
 
     id: ClassVar[int] = 27
     size: ClassVar[int] = 2
-
     wall_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet27":
@@ -429,7 +408,6 @@ class Packet28(Packet):
 
     id: ClassVar[int] = 28
     size: ClassVar[int] = 2
-
     cliff_left_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet28":
@@ -443,7 +421,6 @@ class Packet29(Packet):
 
     id: ClassVar[int] = 29
     size: ClassVar[int] = 2
-
     cliff_front_left_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet29":
@@ -457,7 +434,6 @@ class Packet30(Packet):
 
     id: ClassVar[int] = 30
     size: ClassVar[int] = 2
-
     cliff_front_right_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet29":
@@ -471,7 +447,6 @@ class Packet31(Packet):
 
     id: ClassVar[int] = 31
     size: ClassVar[int] = 2
-
     cliff_right_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet28":
@@ -485,7 +460,6 @@ class Packet32(Packet):
 
     id: ClassVar[int] = 32
     size: ClassVar[int] = 1
-
     unused_byte: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet32":
@@ -499,7 +473,6 @@ class Packet33(Packet):
 
     id: ClassVar[int] = 33
     size: ClassVar[int] = 2
-
     unused_short: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet33":
@@ -513,7 +486,6 @@ class Packet34(Packet):
 
     id: ClassVar[int] = 34
     size: ClassVar[int] = 1
-
     home_base: bool = False
     internal_charger: bool = False
 
@@ -530,7 +502,6 @@ class Packet35(Packet):
 
     id: ClassVar[int] = 35
     size: ClassVar[int] = 1
-
     mode: Mode = Mode.OFF
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet35":
@@ -548,7 +519,6 @@ class Packet36(Packet):
 
     id: ClassVar[int] = 36
     size: ClassVar[int] = 1
-
     song: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet36":
@@ -562,7 +532,6 @@ class Packet37(Packet):
 
     id: ClassVar[int] = 37
     size: ClassVar[int] = 1
-
     song_playing: bool = False
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet37":
@@ -577,7 +546,6 @@ class Packet38(Packet):
 
     id: ClassVar[int] = 38
     size: ClassVar[int] = 1
-
     stream_packet_count: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet38":
@@ -591,7 +559,6 @@ class Packet39(Packet):
 
     id: ClassVar[int] = 39
     size: ClassVar[int] = 2
-
     requested_velocity: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet39":
@@ -605,7 +572,6 @@ class Packet40(Packet):
 
     id: ClassVar[int] = 40
     size: ClassVar[int] = 2
-
     requested_radius: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet40":
@@ -619,7 +585,6 @@ class Packet41(Packet):
 
     id: ClassVar[int] = 41
     size: ClassVar[int] = 2
-
     requested_right_velocity: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet41":
@@ -633,7 +598,6 @@ class Packet42(Packet):
 
     id: ClassVar[int] = 42
     size: ClassVar[int] = 2
-
     requested_left_velocity: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet42":
@@ -647,7 +611,6 @@ class Packet43(Packet):
 
     id: ClassVar[int] = 43
     size: ClassVar[int] = 2
-
     right_encoder_counts: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet43":
@@ -661,7 +624,6 @@ class Packet44(Packet):
 
     id: ClassVar[int] = 44
     size: ClassVar[int] = 2
-
     left_encoder_counts: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet44":
@@ -675,7 +637,6 @@ class Packet45(Packet):
 
     id: ClassVar[int] = 45
     size: ClassVar[int] = 1
-
     bumper_right: bool = False
     bumper_front_right: bool = False
     bumper_center_right: bool = False
@@ -700,7 +661,6 @@ class Packet46(Packet):
 
     id: ClassVar[int] = 46
     size: ClassVar[int] = 2
-
     bump_left_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet46":
@@ -714,7 +674,6 @@ class Packet47(Packet):
 
     id: ClassVar[int] = 47
     size: ClassVar[int] = 2
-
     bump_front_left_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet47":
@@ -728,7 +687,6 @@ class Packet48(Packet):
 
     id: ClassVar[int] = 48
     size: ClassVar[int] = 2
-
     bump_center_left_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet48":
@@ -742,7 +700,6 @@ class Packet49(Packet):
 
     id: ClassVar[int] = 49
     size: ClassVar[int] = 2
-
     bump_center_right_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet49":
@@ -756,7 +713,6 @@ class Packet50(Packet):
 
     id: ClassVar[int] = 50
     size: ClassVar[int] = 2
-
     bump_front_right_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet50":
@@ -770,7 +726,6 @@ class Packet51(Packet):
 
     id: ClassVar[int] = 51
     size: ClassVar[int] = 2
-
     bump_right_signal: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet51":
@@ -784,7 +739,6 @@ class Packet52(Packet):
 
     id: ClassVar[int] = 52
     size: ClassVar[int] = 1
-
     ir_character_left: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet52":
@@ -798,7 +752,6 @@ class Packet53(Packet):
 
     id: ClassVar[int] = 53
     size: ClassVar[int] = 1
-
     ir_character_right: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet53":
@@ -812,7 +765,6 @@ class Packet54(Packet):
 
     id: ClassVar[int] = 54
     size: ClassVar[int] = 2
-
     left_motor_current: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet54":
@@ -826,7 +778,6 @@ class Packet55(Packet):
 
     id: ClassVar[int] = 55
     size: ClassVar[int] = 2
-
     right_motor_current: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet55":
@@ -840,7 +791,6 @@ class Packet56(Packet):
 
     id: ClassVar[int] = 56
     size: ClassVar[int] = 2
-
     main_brush_motor_current: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet56":
@@ -854,7 +804,6 @@ class Packet57(Packet):
 
     id: ClassVar[int] = 57
     size: ClassVar[int] = 2
-
     side_brush_motor_current: int = 0
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet57":
@@ -868,7 +817,6 @@ class Packet58(Packet):
 
     id: ClassVar[int] = 58
     size: ClassVar[int] = 1
-
     forward_progress: bool = False
 
     def from_bytes(data: bytes, offset: int = 0) -> "Packet58":
@@ -883,7 +831,6 @@ class Packet0(Packet):
 
     id: ClassVar[int] = 0
     size: ClassVar[int] = 26
-
     packet_7: Packet7
     packet_8: Packet8
     packet_9: Packet9
@@ -945,7 +892,6 @@ class Packet0(Packet):
         packet_25 = Packet25.from_bytes(data, offset=offset)
         offset += Packet25.size
         packet_26 = Packet26.from_bytes(data, offset=offset)
-
         return Packet0(
             packet_7,
             packet_8,
@@ -976,7 +922,6 @@ class Packet1(Packet):
 
     id: ClassVar[int] = 1
     size: ClassVar[int] = 10
-
     packet_7: Packet7
     packet_8: Packet8
     packet_9: Packet9
@@ -1008,7 +953,6 @@ class Packet1(Packet):
         packet_15 = Packet15.from_bytes(data, offset=offset)
         offset += Packet15.size
         packet_16 = Packet16.from_bytes(data, offset=offset)
-
         return Packet1(packet_7, packet_8, packet_9, packet_10, packet_11, packet_12, packet_13, packet_14, packet_15, packet_16)
 
 
@@ -1018,7 +962,6 @@ class Packet2(Packet):
 
     id: ClassVar[int] = 2
     size: ClassVar[int] = 6
-
     packet_17: Packet17
     packet_18: Packet18
     packet_19: Packet19
@@ -1032,7 +975,6 @@ class Packet2(Packet):
         packet_19 = Packet19.from_bytes(data, offset=offset)
         offset += Packet19.size
         packet_20 = Packet20.from_bytes(data, offset=offset)
-
         return Packet2(packet_17, packet_18, packet_19, packet_20)
 
 
@@ -1042,7 +984,6 @@ class Packet3(Packet):
 
     id: ClassVar[int] = 3
     size: ClassVar[int] = 10
-
     packet_21: Packet21
     packet_22: Packet22
     packet_23: Packet23
@@ -1062,7 +1003,6 @@ class Packet3(Packet):
         packet_25 = Packet25.from_bytes(data, offset=offset)
         offset += Packet25.size
         packet_26 = Packet26.from_bytes(data, offset=offset)
-
         return Packet3(packet_21, packet_22, packet_23, packet_24, packet_25, packet_26)
 
 
@@ -1072,7 +1012,6 @@ class Packet4(Packet):
 
     id: ClassVar[int] = 4
     size: ClassVar[int] = 14
-
     packet_27: Packet27
     packet_28: Packet28
     packet_29: Packet29
@@ -1107,7 +1046,6 @@ class Packet5(Packet):
 
     id: ClassVar[int] = 5
     size: ClassVar[int] = 12
-
     packet_35: Packet35
     packet_36: Packet36
     packet_37: Packet37
@@ -1142,7 +1080,6 @@ class Packet6(Packet):
 
     id: ClassVar[int] = 6
     size: ClassVar[int] = 52
-
     packet_7: Packet7
     packet_8: Packet8
     packet_9: Packet9
@@ -1252,7 +1189,6 @@ class Packet6(Packet):
         packet_41 = Packet41.from_bytes(data, offset=offset)
         offset += Packet41.size
         packet_42 = Packet42.from_bytes(data, offset=offset)
-
         return Packet6(
             packet_7,
             packet_8,
@@ -1299,7 +1235,6 @@ class Packet100(Packet):
 
     id: ClassVar[int] = 100
     size: ClassVar[int] = 80
-
     packet_7: Packet7
     packet_8: Packet8
     packet_9: Packet9
@@ -1457,7 +1392,6 @@ class Packet100(Packet):
         packet_57 = Packet57.from_bytes(data, offset=offset)
         offset += Packet57.size
         packet_58 = Packet58.from_bytes(data, offset=offset)
-
         return Packet100(
             packet_7,
             packet_8,
@@ -1520,7 +1454,6 @@ class Packet101(Packet):
 
     id: ClassVar[int] = 101
     size: ClassVar[int] = 28
-
     packet_43: Packet43
     packet_44: Packet44
     packet_45: Packet45
@@ -1579,7 +1512,6 @@ class Packet106(Packet):
 
     id: ClassVar[int] = 106
     size: ClassVar[int] = 12
-
     packet_46: Packet46
     packet_47: Packet47
     packet_48: Packet48
@@ -1608,7 +1540,6 @@ class Packet107(Packet):
 
     id: ClassVar[int] = 107
     size: ClassVar[int] = 9
-
     packet_54: Packet54
     packet_55: Packet55
     packet_56: Packet56
