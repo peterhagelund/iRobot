@@ -32,7 +32,7 @@ from logging import DEBUG, Logger
 from struct import pack
 from threading import Lock
 from time import sleep
-from typing import List, Self, Tuple
+from typing import List, Tuple
 
 from serial import Serial
 
@@ -318,8 +318,8 @@ class Roomba:
 
         Raises
         ------
-            ValueError
-                If the `velocity` or the `radius` is invalid.
+        ValueError
+            If the `velocity` or the `radius` is invalid.
         """
         if velocity < -500 or velocity > 500:
             raise ValueError(f"Velocity {velocity} is unsupported by Roomba")
@@ -661,7 +661,10 @@ class Roomba:
     def pause_resume_stream(self, start: bool):
         """Instructs the Roomba to pause or resume the stream of packets requested with `Roomba.stream()`.
 
-        :param start: `True` to start streaming packets; `False` otherwise.
+        Parameters
+        ----------
+        start : bool
+            `True` to start streaming packets; `False` otherwise.
         """
         data = bytes([Command.PAUSE_RESUME_STREAM, int(start)])
         self.write(data)
